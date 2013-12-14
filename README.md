@@ -1,2 +1,5 @@
-ludumdare28
+One True God
 ===========
+
+Create your Cult
+

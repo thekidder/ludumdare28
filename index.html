@@ -1,11 +1,13 @@
 <html>
-  <head></head>
+  <head>
+    <link rel="stylesheet" type="text/css" href="style/game.css" />
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/crafty/0.5.4/crafty-min.js"></script>
+    <script src="lib/perlin.js"></script>
+    <script src="src/game.js"></script>
+    <title>One True God</title>
+  </head>
   <body>
     <div id="game"></div>
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/crafty/0.5.4/crafty-min.js"></script>
-    <script>
-      Crafty.init(500,350, document.getElementById('game'));
-      Crafty.e('2D, DOM, Color').attr({x: 0, y: 0, w: 100, h: 100}).color('#F00');
-    </script>
   </body>
 </html>
