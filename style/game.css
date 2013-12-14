@@ -4,3 +4,15 @@
   margin-right: auto;
   background-color: #ddd;
 }
+
+.county-popover {
+  display: block !important;
+}
+
+.county-popover dl {
+  margin-bottom: 0px;
+}
+
+.dl-horizontal dt {
+  text-align: left;
+}
