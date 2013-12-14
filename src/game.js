@@ -51,7 +51,7 @@ function generateMap() {
   var countiesAssigned = 0;
   for(var i = 0; countiesAssigned < mapOptions.numCounties; ++i) {
     if(map.cell(landIndices[i]).land) {
-      map.cell(landIndices[i]).county = countiesAssigned;
+      map.cell(landIndices[i]).county = countiesAssigned + 1;
       ++countiesAssigned;
     }
   }
@@ -61,7 +61,7 @@ function generateMap() {
     haveUnassignedCounties = false;
     for(var i = 0; i < map.data.length; ++i) {
       var cell = map.cell(landIndices[i]);
-      if(!cell.hasOwnProperty('county')) {
+      if(!cell.county) {
         haveUnassignedCounties = true;
 
         var neighbors = map.neighbors(landIndices[i]);
