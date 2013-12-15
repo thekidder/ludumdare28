@@ -9,7 +9,7 @@ var mapOptions = {
 $(document).ready(function() {
   noise.seed(Math.random());
 
-  Crafty.init(912,600, document.getElementById('game'));
+  Crafty.init(912,344, document.getElementById('game'));
 
   Crafty.sprite(32, "assets/ground.png", {
     ground: [0,0,1,1]
