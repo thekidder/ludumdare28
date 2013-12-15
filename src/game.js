@@ -12,7 +12,22 @@ $(document).ready(function() {
   Crafty.init(912,344, document.getElementById('game'));
 
   Crafty.sprite(32, "assets/ground.png", {
-    ground: [0,0,1,1]
+    groundBorder: [0,0,1,1],
+    groundBorderNorth: [0,1,1,1],
+    groundBorderNorthEastSouth: [0,2,1,1],
+    groundBorderEastSouth: [0,3,1,1],
+    groundBorderNorthEastSouthWest: [1,0,1,1],
+    groundBorderWest: [1,1,1,1],
+    groundBorderEastSouthWest: [1,2,1,1],
+    groundBorderSouthWest: [1,3,1,1],
+    groundBorderNorthWest: [2,0,1,1],
+    groundBorderSouth: [2,1,1,1],
+    groundBorderNorthSouthWest: [2,2,1,1],
+    groundBorderNorthSouth: [2,3,1,1],
+    groundBorderNorthEastWest: [3,0,1,1],
+    groundBorderEast: [3,1,1,1],
+    groundBorderNorthEast: [3,2,1,1],
+    groundBorderEastWest: [3,3,1,1],
   });
 
   generateMap();
@@ -40,7 +55,7 @@ function generateMap() {
       if(noise.perlin2(i / scale + xOffset, j / scale + yOffset) + height > 0.1) {
          map.cell(i, j).land = false;
       } else {
-        map.cell(i, j).land =  true;
+        map.cell(i, j).land = true;
       }
     }
   }
@@ -63,6 +78,7 @@ function generateMap() {
   var haveUnassignedCounties = true;
   while(haveUnassignedCounties) {
     haveUnassignedCounties = false;
+    console.log('iteratin')
     for(var i = 0; i < map.data.length; ++i) {
       var cell = map.cell(landIndices[i]);
       if(!cell.county) {
@@ -84,14 +100,39 @@ function generateMap() {
   for(var i = mapOptions.width - 1; i >= 0; --i) {
     for(var j = 0; j < mapOptions.height; ++j) {
       if(map.cell(i, j).land) {
-        
-        var e = Crafty.e('2D, DOM, ground')
-          //.attr({x: i * mapOptions.tileWidth, y: j * mapOptions.tileHeight, w: mapOptions.tileWidth, h: mapOptions.tileHeight})
-          .attr('z', i+1 * j+1)
-        //if(map.cell(i,j).hasOwnProperty('county') && map.cell(i,j).land) {
-        //  e.replace('<span style="position: relative; top: 11px;">' + map.cell(i,j).county + '</span');
-        //}
-        iso.place(i, j, 0, e);
+        var create = function() {
+          var x = i; //closures
+          var y = j;
+
+          var spriteName = 'groundBorder';
+
+          if(!map.northNeighbor(i, j) || !map.northNeighbor(i, j).land || map.northNeighbor(i,j).county != map.cell(i,j).county)
+            spriteName += 'North';
+
+          if(!map.eastNeighbor(i, j) || !map.eastNeighbor(i, j).land || map.eastNeighbor(i,j).county != map.cell(i,j).county)
+            spriteName += 'East';
+
+          if(!map.southNeighbor(i, j) || !map.southNeighbor(i, j).land || map.southNeighbor(i,j).county != map.cell(i,j).county)
+            spriteName += 'South';
+
+          if(!map.westNeighbor(i, j) || !map.westNeighbor(i, j).land || map.westNeighbor(i,j).county != map.cell(i,j).county)
+            spriteName += 'West';
+
+
+          var e = Crafty.e('2D, DOM, ' + spriteName + ', Mouse')
+            //.attr({x: i * mapOptions.tileWidth, y: j * mapOptions.tileHeight, w: mapOptions.tileWidth, h: mapOptions.tileHeight})
+            .attr('z', i+1 * j+1)
+            .areaMap([16,0],[32,8],[32,24],[16,32],[0,24],[0,8])
+            .bind('Click', function(e) {
+              
+              console.log(x + ', ' + y + ': ' + map.cell(x, y).county);
+            });
+          //if(map.cell(i,j).hasOwnProperty('county') && map.cell(i,j).land) {
+          //  e.replace('<span style="position: relative; top: 11px;">' + map.cell(i,j).county + '</span');
+          //}
+          iso.place(i, j, 0, e);
+        }
+        create();
       }
     }
   }
