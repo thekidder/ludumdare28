@@ -5,12 +5,20 @@
   background-color: #ddd;
 }
 
-.county-popover {
+.visible {
   display: block !important;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.county-popover {
 }
 
 .county-popover dl {
   margin-bottom: 0px;
+  width: 280px;
 }
 
 .dl-horizontal dt {

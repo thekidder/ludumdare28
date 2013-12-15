@@ -1,10 +1,29 @@
+function Cell() {
+  this.land = false;
+  this.county = undefined;
+  this.entity = undefined;
+  this.borderName = '';
+
+  this.setHighlight = function(h) {
+    if(!this.entity)
+      return;
+    if(h) {
+      this.entity.removeComponent('groundBorder' + this.borderName);
+      this.entity.addComponent('groundHighlightBorder' + this.borderName);
+    } else {
+      this.entity.removeComponent('groundHighlightBorder' + this.borderName);
+      this.entity.addComponent('groundBorder' + this.borderName);
+    }
+  };
+}
+
 function Map(width, height) {
   this.width = width;
   this.height = height;
   this.data = new Array(width * height);
 
   for(var i = 0; i < this.data.length; ++i) {
-    this.data[i] = {};
+    this.data[i] = new Cell();
   }
 
   this.cell = function() {
