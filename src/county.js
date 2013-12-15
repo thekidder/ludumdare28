@@ -70,8 +70,8 @@ function County(name, population, converts, skepticism, income) {
 
   this.cells = [];
 
-  this.bishop = undefined;
-  this.church = true;
+  this.bishop = Math.random() > 0.5 ? true : false;
+  this.church = Math.random() > 0.5 ? true : false;
 
   this.blurb = 'The citizens of ' + this.name + ' are enthused about Godtology. They wake up every morning with a spring in their step and fewer dollars in their pockets.';
 
