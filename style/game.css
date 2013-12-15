@@ -10,9 +10,15 @@
   height: 100%;
 }
 
-.navbar-bottom {
-  padding-top: 2px;
-  padding-bottom: 2px;
+#hud-buttons {
+}
+
+#hud-buttons .btn {
+  border-radius: 20px;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 4px;
+  white-space: normal;
 }
 
 .form-horizontal .form-group {

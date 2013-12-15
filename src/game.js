@@ -10,20 +10,13 @@ var canvasWidth = 912;
 var canvasHeight = 480; // 344 is 100% height
 var mapHeight = mapOptions.height * mapOptions.tileHeight / 4 + (mapOptions.tileHeight / 4 * 3);
 
+var HUDButtons;
+
 var tooltip;
 var tooltipData;
 
-var countyWindow;
-var countyWindowData;
-
 function randRange(low, high) {
   return Math.floor(Math.random() * (high - low)) + low;
-}
-
-function closeCountyWindow() {
-  console.log('closed');
-  $('#county-panel').removeClass('visible');
-  countyWindow.toggleComponent('Mouse');
 }
 
 $(document).ready(function() {
@@ -72,17 +65,21 @@ $(document).ready(function() {
 
   generateMap();
 
-  Crafty.viewport.y = -(mapHeight - canvasHeight) / 4;
+  //Crafty.viewport.y = -(mapHeight - canvasHeight) / 4;
 
   $.get("html/tooltip.html", function(data) {
     tooltipData = doT.template(data);
     tooltip = Crafty.e('2D, DOM, HTML').attr({x: 0, y: 0, z: 10000});
   });
 
-  $.get("html/county.html", function(data) {
-    countyWindowData = doT.template(data);
-    countyWindow = Crafty.e('2D, DOM, HTML').attr({x: 0, y: -Crafty.viewport.y, z: 10000, w: canvasWidth, h: canvasHeight});
+  $.get("html/button_bar.html", function(data) {
+    HUDButtons = Crafty.e('2D, DOM, HTML').attr({x: canvasWidth - 168, y: -Crafty.viewport.y + canvasHeight - 84, z: 9999, w: 180})
+      .replace(data);
+    $('#manage-bishops').on('click', function() {openDialog('bishop');});
   });
+
+  loadDialog('county');
+  loadDialog('bishop');
 
   $('#manage-bishops').tooltip({delay: { show: 1000}});
 });
@@ -192,15 +189,15 @@ function generateMap() {
           var e = Crafty.e('2D, DOM, groundBorder' + borderName + ', Mouse')
             .attr('z', i+1 * j+1)
             .areaMap([16,0],[32,8],[32,24],[16,32],[0,24],[0,8])
-            .bind('Click', function() {
+            .bind('Click', function(e) {
+              if(dialogCloseEvent && e.timeStamp == dialogCloseEvent.timeStamp) {
+                console.log('HACK HACK HACK');
+                return; // HACK HACK HACK HACK
+              }
               console.log(x + ', ' + y + ': ' + map.cell(x, y).county);
 
               var county = map.cell(x,y).county;
-              countyWindow.replace(countyWindowData(counties[county - 1]));
-              countyWindow.toggleComponent('Mouse');
-
-              console.log('add ui');
-              $('#county-panel').addClass('visible');
+              openDialog('county', counties[county - 1]);
             })
             .bind('MouseOver', function(e) {
               var county = map.cell(x,y).county;
