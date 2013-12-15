@@ -12,8 +12,17 @@ var canvasHeight = 344;
 var tooltip;
 var tooltipData;
 
+var countyWindow;
+var countyWindowData;
+
 function randRange(low, high) {
   return Math.floor(Math.random() * (high - low)) + low;
+}
+
+function closeCountyWindow() {
+  console.log('closed');
+  $('#county-panel').removeClass('visible');
+  countyWindow.toggleComponent('Mouse');
 }
 
 $(document).ready(function() {
@@ -65,6 +74,11 @@ $(document).ready(function() {
   $.get("html/tooltip.html", function(data) {
     tooltipData = doT.template(data);
     tooltip = Crafty.e('2D, DOM, HTML').attr({x: 0, y: 0, z: 10000});
+  });
+
+  $.get("html/county.html", function(data) {
+    countyWindowData = doT.template(data);
+    countyWindow = Crafty.e('2D, DOM, HTML').attr({x: 0, y: 0, z: 10000, w: canvasWidth, h: canvasHeight});
   });
 });
 
@@ -130,13 +144,20 @@ function generateMap() {
 
   var counties = Array(mapOptions.numCounties);
   for(var i = 0; i < mapOptions.numCounties; ++i) {
-    var pop= Math.round(Math.random() * 95000 + 5000);
+    var pop = Math.round(Math.random() * 95000 + 5000);
     counties[i] = new County(
       countyNames[randRange(0, countyNames.length)],
       pop,
       Math.round(Math.random() * pop),
       skepticisms[randRange(0, skepticisms.length)],
       Math.round(Math.random() * 45000 + 30000));
+  }
+
+  for(var i = 0; i < map.data.length; ++i) {
+    var cell = map.cell(i);
+    if(cell.land) {
+      counties[cell.county - 1].cells.push(cell);
+    }
   }
   
   var iso = Crafty.isometric.size(32);
@@ -168,24 +189,19 @@ function generateMap() {
             .areaMap([16,0],[32,8],[32,24],[16,32],[0,24],[0,8])
             .bind('Click', function() {
               console.log(x + ', ' + y + ': ' + map.cell(x, y).county);
+
+              var county = map.cell(x,y).county;
+              countyWindow.replace(countyWindowData(counties[county - 1]));
+              countyWindow.toggleComponent('Mouse');
+
+              console.log('add ui');
+              $('#county-panel').addClass('visible');
             })
             .bind('MouseOver', function(e) {
               var county = map.cell(x,y).county;
-              for(var k = 0; k < map.data.length; ++k) {
-                if(map.cell(k) && map.cell(k).entity && map.cell(k).county == county) {
-                  map.cell(k).setHighlight(true);
-                }
-              }
+              counties[county - 1].setHighlight(true);
 
-              var c = {
-                name: counties[county - 1].name,
-                population: counties[county - 1].population,
-                converts: counties[county - 1].converts,
-                skepticism: counties[county - 1].skepticism,
-                income: counties[county - 1].income
-              };
-
-              var html = tooltipData(c);
+              var html = tooltipData(counties[county - 1]);
               tooltip.replace(html);
 
               $('#county-popover').removeClass('hidden');
@@ -206,11 +222,8 @@ function generateMap() {
             })
             .bind('MouseOut', function() {
               var county = map.cell(x,y).county;
-              for(var k = 0; k < map.data.length; ++k) {
-                if(map.cell(k) && map.cell(k).entity && map.cell(k).county == county) {
-                  map.cell(k).setHighlight(false);
-                }
-              }
+              counties[county - 1].setHighlight(false);
+
               $('#county-popover').addClass('hidden');
               $('#county-popover').removeClass('visible');
             });

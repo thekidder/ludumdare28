@@ -24,6 +24,11 @@
   text-align: center;
 }
 
+.modal {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
 #game {
   display: block;
   margin-left: auto;

@@ -67,4 +67,12 @@ function County(name, population, converts, skepticism, income) {
   this.converts = converts;
   this.skepticism = skepticism;
   this.income = income;
+
+  this.cells = [];
+
+  this.setHighlight = function(h) {
+    for(var i = 0; i < this.cells.length; ++i) {
+      this.cells[i].setHighlight(h);
+    }
+  }
 }
