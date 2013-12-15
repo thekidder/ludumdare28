@@ -3,6 +3,7 @@
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="style/game.css" />
     <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/crafty/0.5.4/crafty-min.js"></script>
     <script src="lib/perlin.js"></script>
@@ -18,7 +19,7 @@
     </nav>
     <div id="game"></div>
     <nav class="text-center navbar navbar-default navbar-bottom">
-      <button type="button" class="btn btn-default btn-lg">
+      <button type="button" id="manage-bishops" class="btn btn-default btn-lg" data-toggle="tooltip" title="Bishops are pretty great.">
         <span class="glyphicon glyphicon-bold"></span><br/>
         <span>Manage Bishops</span>
       </button>

@@ -80,6 +80,8 @@ $(document).ready(function() {
     countyWindowData = doT.template(data);
     countyWindow = Crafty.e('2D, DOM, HTML').attr({x: 0, y: 0, z: 10000, w: canvasWidth, h: canvasHeight});
   });
+
+  $('#manage-bishops').tooltip({delay: { show: 1000}});
 });
 
 function generateMap() {
