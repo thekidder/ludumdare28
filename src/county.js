@@ -70,6 +70,11 @@ function County(name, population, converts, skepticism, income) {
 
   this.cells = [];
 
+  this.bishop = undefined;
+  this.church = true;
+
+  this.blurb = 'The citizens of ' + this.name + ' are enthused about Godtology. They wake up every morning with a spring in their step and fewer dollars in their pockets.';
+
   this.setHighlight = function(h) {
     for(var i = 0; i < this.cells.length; ++i) {
       this.cells[i].setHighlight(h);

@@ -1,13 +1,14 @@
 var mapOptions = {
   width: 28,
-  height: 40,
+  height: 50,
   tileWidth: 20,
   tileHeight: 20,
-  numCounties: 30
+  numCounties: 40
 };
 
 var canvasWidth = 912;
-var canvasHeight = 460;
+var canvasHeight = 480; // 344 is 100% height
+var mapHeight = mapOptions.height * mapOptions.tileHeight / 4 + (mapOptions.tileHeight / 4 * 3);
 
 var tooltip;
 var tooltipData;
@@ -71,6 +72,8 @@ $(document).ready(function() {
 
   generateMap();
 
+  Crafty.viewport.y = -(mapHeight - canvasHeight) / 4;
+
   $.get("html/tooltip.html", function(data) {
     tooltipData = doT.template(data);
     tooltip = Crafty.e('2D, DOM, HTML').attr({x: 0, y: 0, z: 10000});
@@ -78,7 +81,7 @@ $(document).ready(function() {
 
   $.get("html/county.html", function(data) {
     countyWindowData = doT.template(data);
-    countyWindow = Crafty.e('2D, DOM, HTML').attr({x: 0, y: 0, z: 10000, w: canvasWidth, h: canvasHeight});
+    countyWindow = Crafty.e('2D, DOM, HTML').attr({x: 0, y: -Crafty.viewport.y, z: 10000, w: canvasWidth, h: canvasHeight});
   });
 
   $('#manage-bishops').tooltip({delay: { show: 1000}});

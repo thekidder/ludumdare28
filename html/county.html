@@ -21,53 +21,71 @@
           </div>
         </div>
         <div class="row">
-        <div class="col-sm-4">
-        <div class="bishop-container">
-          <!--<button class="btn btn-default btn-add-bishop">
-            <span class="glyphicon glyphicon-plus"></span><br/>
-            Add Bishop
-          </button>-->
-
-          <div class="text-center bishop-img">
-          <img src="assets/bishop.jpg" />
-          Bishop Mccreepy-san
-          </div>
-        </div>
-        </div>
-        <div class="col-sm-8">
-        <p>The citizens of {{=it.name}} are enthused about Godtology. They wake up every morning with a spring in their step and fewer dollars in their pockets.</p>
-        <div class="text-center">
-          <button type="button" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-plus"></span><br/>
-            Expand Church
-          </button>
-          <button type="button" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-book"></span><br/>
-            Spread Pamphlets
-          </button>
-          <button type="button" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-minus"></span><br/>
-            Remove Bishop
-          </button>
-        </div>
-        <form class="form-horizontal">
-          <div class="form-group">
-            <label for="bishop-pay" class="col-xs-6">Bishop Pay</label>
-            <div class="input-group" class="col-xs-6">
-              <span class="input-group-addon">$</span>
-              <input id="bishop-pay" type="text" class="form-control">
+        {{? it.church}}
+          <div class="col-sm-4">
+            <div class="bishop-container">
+              <div class="text-center bishop-img">
+                <img src="assets/church-small.jpg" /><br/>
+                Small Church
+              </div>
+            </div>
+            <div class="bishop-container">
+              {{? it.bishop}}
+              <div class="text-center bishop-img">
+                <img src="assets/bishop.jpg" /><br/>
+                Bishop Mccreepy-san
+              </div>
+              {{?? true }}
+              <button class="btn btn-default btn-add-bishop">
+                <span class="glyphicon glyphicon-plus"></span><br/>
+                Add Bishop
+              </button> 
+              {{?}}
             </div>
           </div>
-
-          <div class="form-group">
-            <label for="tithe" class="col-xs-6">Tithe Requirement</label>
-            <div class="input-group" class="col-xs-6">
-              <input id="tithe" type="text" class="form-control">
-              <span class="input-group-addon">%</span>
-            </div>
+          <div class="col-sm-8">
+          <p>{{=it.blurb}}</p>
+          <div class="text-center">
+            <button type="button" class="btn btn-default btn-sm">
+              <span class="glyphicon glyphicon-plus"></span><br/>
+              Expand Church
+            </button>
+            <button type="button" class="btn btn-default btn-sm">
+              <span class="glyphicon glyphicon-book"></span><br/>
+              Spread Pamphlets
+            </button>
+            <button type="button" class="btn btn-default btn-sm">
+              <span class="glyphicon glyphicon-minus"></span><br/>
+              Remove Bishop
+            </button>
           </div>
-        </form>
-      </div>
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="bishop-pay" class="col-xs-6">Bishop Pay</label>
+              <div class="input-group" class="col-xs-6">
+                <span class="input-group-addon">$</span>
+                <input id="bishop-pay" type="text" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="tithe" class="col-xs-6">Tithe Requirement</label>
+              <div class="input-group" class="col-xs-6">
+                <input id="tithe" type="text" class="form-control">
+                <span class="input-group-addon">%</span>
+              </div>
+            </div>
+          </form>
+        </div>
+        {{?? true}}
+        <div class="col-sm-12">
+          <p>{{=it.blurb}}</p>
+          <button type="button" class="btn btn-default btn-lg">
+            <span class="glyphicon glyphicon-open"></span><br/>
+            <span>Build a Church</span>
+          </button>
+        </div>
+        {{?}}
       </div>
     </div>
   </div>
