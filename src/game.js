@@ -1,15 +1,19 @@
 var mapOptions = {
-  width: 30,
-  height: 20,
+  width: 28,
+  height: 40,
   tileWidth: 20,
   tileHeight: 20,
-  numCounties: 12
+  numCounties: 30
 };
 
 $(document).ready(function() {
   noise.seed(Math.random());
 
-  Crafty.init(900,600, document.getElementById('game'));
+  Crafty.init(912,600, document.getElementById('game'));
+
+  Crafty.sprite(32, "assets/ground.png", {
+    ground: [0,0,1,1]
+  });
 
   generateMap();
 
@@ -76,18 +80,18 @@ function generateMap() {
     }
   }
   
-  for(var i = 0; i < mapOptions.width; ++i) {
+  var iso = Crafty.isometric.size(32);
+  for(var i = mapOptions.width - 1; i >= 0; --i) {
     for(var j = 0; j < mapOptions.height; ++j) {
       if(map.cell(i, j).land) {
-        var color = 'green';
-      } else {
-        var color = 'blue';
-      }
-      var e = Crafty.e('2D, Color, DOM, HTML')
-        .attr({x: i * mapOptions.tileWidth, y: j * mapOptions.tileHeight, w: mapOptions.tileWidth, h: mapOptions.tileHeight})
-        .color(color);
-      if(map.cell(i,j).hasOwnProperty('county') && map.cell(i,j).land) {
-        e.replace('<span style="position: relative; top: 11px; left: 6px">' + map.cell(i,j).county + '</span');
+        
+        var e = Crafty.e('2D, DOM, ground')
+          //.attr({x: i * mapOptions.tileWidth, y: j * mapOptions.tileHeight, w: mapOptions.tileWidth, h: mapOptions.tileHeight})
+          .attr('z', i+1 * j+1)
+        //if(map.cell(i,j).hasOwnProperty('county') && map.cell(i,j).land) {
+        //  e.replace('<span style="position: relative; top: 11px;">' + map.cell(i,j).county + '</span');
+        //}
+        iso.place(i, j, 0, e);
       }
     }
   }
