@@ -78,7 +78,6 @@ function generateMap() {
   var haveUnassignedCounties = true;
   while(haveUnassignedCounties) {
     haveUnassignedCounties = false;
-    console.log('iteratin')
     for(var i = 0; i < map.data.length; ++i) {
       var cell = map.cell(landIndices[i]);
       if(!cell.county) {
