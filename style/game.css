@@ -15,6 +15,10 @@
   padding-bottom: 2px;
 }
 
+.form-horizontal .form-group {
+  margin-top: 10px;
+}
+
 .glyphicon {
   font-size: 24px;
   margin-bottom: 6px;
@@ -36,6 +40,41 @@
   background-color: #C3D3FA;
 }
 
+.bishop-container {
+  border: 1px solid #333;
+  border-radius: 20px;
+  width: 150px;
+  height: 200px;
+  position: relative;
+}
+
+.bishop-img {
+  margin: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  height: 150px;
+}
+
+.bishop-img img {
+  width: 100%;
+}
+
+.btn-add-bishop {
+  border-radius: 40px;
+  margin: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  height: 100px;
+}
+
 .visible {
   display: block !important;
 }
@@ -55,4 +94,12 @@
 
 .dl-horizontal dt {
   text-align: left;
+}
+
+.dl-compact dt {
+  width: 140px;
+}
+
+.dl-compact dd {
+  margin-left: 160px;
 }

@@ -7,7 +7,7 @@ var mapOptions = {
 };
 
 var canvasWidth = 912;
-var canvasHeight = 344;
+var canvasHeight = 460;
 
 var tooltip;
 var tooltipData;

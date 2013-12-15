@@ -5,12 +5,69 @@
         <a id="county-window-close" class="close" aria-hidden="true" href="javascript:closeCountyWindow()">&times;</a>
         <h4 class="modal-title">{{=it.name}} County</h4>
       </div>
-      <div class="modal-body">
-        <p>What a great place.</p>
-        <button class="btn btn-default btn-lg">Build a Church</button>
-        <button class="btn btn-default btn-lg">Spread Pamphlets</button>
+      <div class="modal-body clearfix">
+        <div class="row">
+          <div class="col-sm-6">
+            <dl class="dl-horizontal dl-compact">
+              <dt>Population</dt><dd>{{=it.population}}</dd>
+              <dt>Converts</dt><dd>{{=it.converts}}</dd>
+            </dl>
+          </div>
+          <div class="col-sm-6">
+            <dl class="dl-horizontal dl-compact">
+              <dt>Skepticism</dt><dd>{{=it.skepticism}}</dd>
+              <dt>Median Income</dt><dd>${{=it.income}}</dd>
+            </dl>
+          </div>
+        </div>
+        <div class="row">
+        <div class="col-sm-4">
+        <div class="bishop-container">
+          <!--<button class="btn btn-default btn-add-bishop">
+            <span class="glyphicon glyphicon-plus"></span><br/>
+            Add Bishop
+          </button>-->
+
+          <div class="text-center bishop-img">
+          <img src="assets/bishop.jpg" />
+          Bishop Mccreepy-san
+          </div>
+        </div>
+        </div>
+        <div class="col-sm-8">
+        <p>The citizens of {{=it.name}} are enthused about Godtology. They wake up every morning with a spring in their step and fewer dollars in their pockets.</p>
+        <div class="text-center">
+          <button type="button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-plus"></span><br/>
+            Expand Church
+          </button>
+          <button type="button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-book"></span><br/>
+            Spread Pamphlets
+          </button>
+          <button type="button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-minus"></span><br/>
+            Remove Bishop
+          </button>
+        </div>
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label for="bishop-pay" class="col-xs-6">Bishop Pay</label>
+            <div class="input-group" class="col-xs-6">
+              <span class="input-group-addon">$</span>
+              <input id="bishop-pay" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="tithe" class="col-xs-6">Tithe Requirement</label>
+            <div class="input-group" class="col-xs-6">
+              <input id="tithe" type="text" class="form-control">
+              <span class="input-group-addon">%</span>
+            </div>
+          </div>
+        </form>
       </div>
-      <div class="modal-footer">
       </div>
     </div>
   </div>
