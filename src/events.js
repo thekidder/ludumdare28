@@ -23,3 +23,4 @@ function getEvent(name, titleObj, textObj) {
 
 addEvent('default', 'A quiet month.', 'This is probably a good thing!');
 addEvent('running_dry', 'Your Treasury is low!', 'You only have {{=it}} left! Try decreasing some costs.');
+addEvent('bishop_defect', 'Bishop Defects in {{=it}}!', '{{=it.bishop}} has defected from {{=it.religion}}! No good can come of this!');

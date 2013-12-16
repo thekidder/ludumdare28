@@ -8,10 +8,10 @@
       <div class="modal-body clearfix">
         <div class="text-center">
           <div id="alerts"></div>
-          {{~ it.events :v }}
-            <p><strong>{{=v.title}}</strong> {{=v.text}}</p>
-          {{~}}
         </div>
+        {{~ it.events :v }}
+          <p><strong>{{=v.title}}</strong> {{=v.text}}</p>
+        {{~}}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary close-button">OK</button>

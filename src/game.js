@@ -332,10 +332,13 @@ function toFuzzyFormat(amount) {
 function endTurn() {
   var lastMoney = game.money;
 
+  var events = [];
+
   game.counties.forEach(updateFervor);
   game.counties.forEach(updateConverts);
   game.counties.forEach(updateHostility);
   game.counties.forEach(updateMoney);
+  game.counties.forEach(function(county) { updateBishopDefections(county, events);});
 
   if(game.pendingBishops[game.month]) {
     game.pendingBishops[game.month].forEach(function(b) {
@@ -347,8 +350,6 @@ function endTurn() {
 
   ++game.month;
   updateGlobalStateUI();
-
-  var events = [];
 
   if(events.length == 0) {
     events = getDefaultEvents(game.money, lastMoney)
@@ -404,6 +405,25 @@ function updateMoney(county) {
   }
 
   game.money += profit;
+}
+
+function updateBishopDefections(county, events) {
+  var alpha = 0.5;
+
+  if(!county.bishop)
+    return;
+
+  var probability = Math.pow(1 - county.bishop.loyalty / 100, county.bishopPay / (alpha * county.income));
+
+  console.log('defect p=' + probability);
+
+  if(Math.random() < probability) {
+    var bishopName = county.bishop.name;
+    county.bishop = undefined;
+
+    events.push(getEvent('bishop_defect', county.name, {religion: game.name, bishop: bishopName}));
+
+  }
 }
 
 function recruitBishop(bishops) {
@@ -495,10 +515,10 @@ function generateBishop() {
   return new Bishop(
     'Mccreepy-San' + (game.bishops.length + _.union(_.map(game.pendingBishops, function(n) { return n;})).length),
     'bishop' + randRange(0, 3) + '.png',
-    randRange(0, 101),
-    randRange(0, 101),
-    randRange(0, 101),
-    randRange(0, 101));
+    randRange(0, 101), // charisma
+    randRange(0, 101), // fervor
+    randRange(45, 100), // loyalty
+    randRange(0, 101)); //penny-pinching
 }
 
 function generateCounties() {
