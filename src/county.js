@@ -68,11 +68,19 @@ function County(name, population, converts, income, hostility, fervor) {
   this.population = population;
   this.converts = converts;
   this.hostility = hostility;
+  this.hostilityRange = 1.5;
+  this.hostilityDriftShock = 0;
   this.internalFervorShock = fervor;
   this.income = income;
   this.incomeStr = toMoneyFormat(income);
   this.tithe = 0;
   this.bishopPay = 0;
+
+  Object.defineProperty(this, 'hostilityDrift', {
+    get: function() {
+      return 20 * (0.1 - this.converts / this.population) + this.hostilityDriftShock;
+    }
+  });
 
   Object.defineProperty(this, 'internalFervor', {
     get: function() {

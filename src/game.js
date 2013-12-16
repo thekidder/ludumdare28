@@ -47,7 +47,13 @@ function openBishopDialog() {
       });
 
       $('#bishop-' + game.bishops[index].name).on('mousemove', function(e) {
-        bishopPopover.attr({x: e.clientX - $('#game').offset().left + 10, y: e.clientY - $('#game').offset().top + 10})
+        followMouse(
+          bishopPopover,
+          e.clientX - $('#game').offset().left,
+          e.clientY - $('#game').offset().top,
+          $('#bishop-popover').width(),
+          $('#bishop-popover').height());
+        //bishopPopover.attr({x: e.clientX - $('#game').offset().left + 10, y: e.clientY - $('#game').offset().top + 10})
       });
 
       $('#bishop-' + game.bishops[index].name).on('mouseleave', function(e) {
@@ -56,6 +62,22 @@ function openBishopDialog() {
     };
     fn();
   }
+}
+
+function followMouse(element, canvasX, canvasY, width, height) {
+  if(canvasX < canvasWidth / 2) {
+    var x = canvasX + 10;
+  } else {
+    var x = canvasX - width - 10;
+  }
+
+  if(canvasY < canvasHeight / 2) {
+    var y = canvasY + 10;
+  } else {
+    var y = canvasY - height - 10;
+  }
+
+  element.attr({x: x, y: y});
 }
 
 $(document).ready(function() {
@@ -147,6 +169,7 @@ $(document).ready(function() {
 function endTurn() {
   game.counties.forEach(updateFervor);
   game.counties.forEach(updateConverts);
+  game.counties.forEach(updateHostility);
 
   ++game.month;
   updateGlobalStateUI();
@@ -167,6 +190,12 @@ function updateConverts(county) {
   growth -= county.fervorTitheModifier() * county.tithe
   growth -= 0.1 * county.hostility;
   county.converts = clamp(Math.round(county.converts * (1 + growth/100)), 0, county.population);
+}
+
+function updateHostility(county) {
+  county.hostility += randRangeFloat(county.hostilityDrift - county.hostilityRange, 
+    county.hostilityDrift + county.hostilityRange);
+  county.hostility = clamp(county.hostility);
 }
 
 function updateGlobalStateUI() {
@@ -219,6 +248,7 @@ function addChurch(county) {
 
 function generateBishop() {
   return new Bishop(
+    'Mccreepy-San',
     randRange(0, 101),
     randRange(0, 101),
     randRange(0, 101),
@@ -256,6 +286,16 @@ function generateCounties() {
     county.converts = 0;
 
     county.setNeighbors(game.map);
+  });
+
+  // set hostility
+  var avgLucrativeness = _.reduce(game.counties, function(memo, f, i, l) {
+    return memo + f.lucrativeness() / l.length;
+  }, 0);
+
+  game.counties.forEach(function(county) {
+    var normLucrativeness = county.lucrativeness() / avgLucrativeness;
+    county.hostility = Math.round(100 * (1 / (1 + Math.exp(1 - normLucrativeness))));
   });
 }
 
@@ -354,41 +394,51 @@ function generateMap() {
               tooltip.visible = false;
               var county = game.map.cell(x,y).county;
               openDialog('county', county);
-              var bishop = {name: 'A'};
-              $('#bishop-' + bishop.name).on('mouseenter', function(e) {
-                bishopPopover.replace(bishopPopoverTemplate(bishop));
-                bishopPopover.visible = true;
-              });
+              var bishop = county.bishop;
+              if(bishop) {
+                $('#bishop-' + bishop.name).on('mouseenter', function(e) {
+                  bishopPopover.replace(bishopPopoverTemplate(bishop));
+                  bishopPopover.visible = true;
+                });
 
-              $('#bishop-' + bishop.name).on('mousemove', function(e) {
-                bishopPopover.attr({x: e.clientX - $('#game').offset().left + 10, y: e.clientY - $('#game').offset().top + 10})
-              });
+                $('#bishop-' + bishop.name).on('mousemove', function(e) {
+                  followMouse(
+                    bishopPopover,
+                    e.clientX - $('#game').offset().left,
+                    e.clientY - $('#game').offset().top,
+                    $('#bishop-popover').width(),
+                    $('#bishop-popover').height());
+                  //bishopPopover.attr({x: e.clientX - $('#game').offset().left + 10, y: e.clientY - $('#game').offset().top + 10})
+                });
 
-              $('#bishop-' + bishop.name).on('mouseleave', function(e) {
-                bishopPopover.visible = false;
-              });
+                $('#bishop-' + bishop.name).on('mouseleave', function(e) {
+                  bishopPopover.visible = false;
+                });
+              }
 
-              $('#tithe').on('change', function(e) {
-                var tithe = parseInt($(this).val());
-                if(isNaN(tithe)) {
-                  tithe = 0;
-                } else {
-                  tithe = clamp(tithe);
-                }
-                $(this).val(tithe);
-                county.tithe = tithe;
-              });
+              if(county.church) {
+                $('#tithe').on('change', function(e) {
+                  var tithe = parseInt($(this).val());
+                  if(isNaN(tithe)) {
+                    tithe = 0;
+                  } else {
+                    tithe = clamp(tithe);
+                  }
+                  $(this).val(tithe);
+                  county.tithe = tithe;
+                });
 
-              $('#bishop-pay').on('change', function(e) {
-                var pay = parseInt($(this).val());
-                if(isNaN(pay)) {
-                  pay = 0;
-                } else {
-                  pay = clamp(pay, 0, 10000);
-                }
-                $(this).val(pay);
-                county.bishopPay = pay;
-              });
+                $('#bishop-pay').on('change', function(e) {
+                  var pay = parseInt($(this).val());
+                  if(isNaN(pay)) {
+                    pay = 0;
+                  } else {
+                    pay = clamp(pay, 0, 10000);
+                  }
+                  $(this).val(pay);
+                  county.bishopPay = pay;
+                });
+              }
             })
             .bind('MouseOver', function(e) {
               var county = game.map.cell(x,y).county;
