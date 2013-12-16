@@ -71,6 +71,7 @@ function County(name, population, converts, income, hostility, fervor) {
   this.internalFervorShock = fervor;
   this.income = income;
   this.incomeStr = toMoneyFormat(income);
+  this.tithe = 0;
 
   Object.defineProperty(this, 'internalFervor', {
     get: function() {
@@ -127,6 +128,10 @@ function County(name, population, converts, income, hostility, fervor) {
 
   this.lucrativeness = function() {
     return this.population * this.income;
+  }
+
+  this.fervorTitheModifier = function() {
+    return Math.pow(2, -this.fervor/10);
   }
 
   this.setHighlight = function(h) {

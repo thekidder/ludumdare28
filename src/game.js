@@ -146,7 +146,7 @@ $(document).ready(function() {
 
 function endTurn() {
   game.counties.forEach(updateFervor);
-  //forEach(game.counties, updateGrowthRate);
+  game.counties.forEach(updateConverts);
 
   ++game.month;
   updateGlobalStateUI();
@@ -155,6 +155,18 @@ function endTurn() {
 function updateFervor(county) {
   amt = Math.min(Math.abs(county.internalFervorShock), 2);
   county.internalFervorShock -= sign(county.internalFervorShock) * amt;
+}
+
+function updateConverts(county) {
+  var growth = 0;
+
+  if(county.church && county.bishop) {
+    growth += county.church.bishopCharismaRate() * county.bishop.charisma;
+  }
+
+  growth -= county.fervorTitheModifier() * county.tithe
+  growth -= 0.1 * county.hostility;
+  county.converts = clamp(Math.round(county.converts * (1 + growth/100)), 0, county.population);
 }
 
 function updateGlobalStateUI() {

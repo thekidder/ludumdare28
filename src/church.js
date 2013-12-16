@@ -11,4 +11,14 @@ function Church() {
       return 2;
     }
   }
+
+  this.bishopCharismaRate = function() {
+    if(this.level == 1) {
+      return 1/40;
+    } else if(this.level == 2) {
+      return 1/20;
+    } else {
+      return 1/10;
+    }
+  }
 }
