@@ -367,11 +367,14 @@ function updateConverts(county) {
 
   if(county.church && county.bishop) {
     growth += county.church.bishopCharismaRate() * county.bishop.charisma;
+    var min = county.minConverts;
+  } else {
+    min = 0;
   }
 
   growth -= county.fervorTitheModifier() * county.tithe
   growth -= 0.05 * county.hostility;
-  county.converts = clamp(Math.round(county.converts * (1 + growth/100)), county.minConverts, county.population);
+  county.converts = clamp(Math.round(county.converts * (1 + growth/100)), min, county.population);
 }
 
 function updateHostility(county) {
