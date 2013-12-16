@@ -7,6 +7,8 @@
       </div>
       <div class="modal-body clearfix">
         <div class="text-center">
+          <div id="error"></div>
+          <div id="alerts"></div>
           {{~ it.bishops :v }}
           <div id="bishop-{{=v.name}}" class="bishop-container">
             <div class="text-center bishop-img">
@@ -17,7 +19,7 @@
           {{~}}
           {{? it.bishops.length < 3 }}
           <div class="bishop-container">
-            <button class="btn btn-default btn-add-bishop">
+            <button id="add-bishop" class="btn btn-default btn-add-bishop">
               <span class="glyphicon glyphicon-plus"></span><br/>
               Recruit Bishop
             </button> 
