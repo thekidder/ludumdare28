@@ -8,10 +8,10 @@
       <div class="modal-body clearfix">
         <div class="text-center">
           {{~ it.bishops :v }}
-          <button type="button" id="bishop-{{=v.name}}" class="bishop-container btn btn-default">
+          <button type="button" id="bishop-{{=v.index}}" class="bishop-container btn btn-default">
             <div class="text-center bishop-img">
               <img src="assets/bishops/{{=v.img}}" /><br/>
-              {{=v.name}}
+              <small>{{=v.name}}</small>
             </div>
           </button>
           {{~}}

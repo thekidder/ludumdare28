@@ -45,7 +45,7 @@ function followMouse(element, canvasX, canvasY, width, height) {
   }
 
   if(canvasY < canvasHeight / 2) {
-    var y = canvasY + 10;
+    var y = canvasY;
   } else {
     var y = canvasY - height - 10;
   }
@@ -144,15 +144,13 @@ $(document).ready(function() {
 
   updateGlobalStateUI();
 
-  loadDialog('begin_game', beginGameDialogConfig, function() { openDialog('begin_game', {});});
+  loadDialog('begin_game', function() {}, function() { openDialog('begin_game', {});}, beginGameDialogClose);
 });
 
-function beginGameDialogConfig(obj) {
-  $('#start').on('click', function() {
-    var name = $('#religion-name-input').val();
-    game.name = name;
-    updateGlobalStateUI();
-  });
+function beginGameDialogClose(d) {
+  var name = $('#religion-name-input').val();
+  game.name = name;
+  updateGlobalStateUI();
 }
 
 function countyDialogConfig(county) {
@@ -163,12 +161,12 @@ function countyDialogConfig(county) {
   });
 
   if(bishop) {
-    $('#bishop-' + bishop.name).on('mouseenter', function(e) {
+    $('#bishop-' + bishop.index).on('mouseenter', function(e) {
       bishopPopover.replace(compileSnippet('bishop_popover', bishop));
       bishopPopover.visible = true;
     });
 
-    $('#bishop-' + bishop.name).on('mousemove', function(e) {
+    $('#bishop-' + bishop.index).on('mousemove', function(e) {
       followMouse(
         bishopPopover,
         e.clientX - $('#game').offset().left,
@@ -177,7 +175,7 @@ function countyDialogConfig(county) {
         $('#bishop-popover').height());
     });
 
-    $('#bishop-' + bishop.name).on('mouseleave', function(e) {
+    $('#bishop-' + bishop.index).on('mouseleave', function(e) {
       bishopPopover.visible = false;
     });
   } else {
@@ -236,7 +234,8 @@ function bishopAddDialogConfig(bishops, dialog) {
   for(var i = 0; i < bishops.bishops.length; ++i) {
     var fn = function() {
       var index = i;
-      $('#bishop-' + bishops.bishops[index].name).on('click', function(e) {
+      console.log('set click on ' + index + ': ' + bishops.bishops[index].index);
+      $('#bishop-' + bishops.bishops[index].index).on('click', function(e) {
         bishops.county.bishop = bishops.bishops[index];
         bishops.bishops.splice(index, 1);
         dialog.close();
@@ -252,12 +251,15 @@ function bishopDialogMouseovers(bishops) {
   for(var i = 0; i < bishops.length; ++i) {
     var fn = function() {
       var index = i;
-      $('#bishop-' + bishops[index].name).on('mouseenter', function(e) {
+
+      console.log('set mouseover on ' + index + ': ' + bishops[index].index);
+
+      $('#bishop-' + bishops[index].index).on('mouseenter', function(e) {
         bishopPopover.replace(compileSnippet('bishop_popover', bishops[index]));
         bishopPopover.visible = true;
       });
 
-      $('#bishop-' + bishops[index].name).on('mousemove', function(e) {
+      $('#bishop-' + bishops[index].index).on('mousemove', function(e) {
         followMouse(
           bishopPopover,
           e.clientX - $('#game').offset().left,
@@ -266,7 +268,7 @@ function bishopDialogMouseovers(bishops) {
           $('#bishop-popover').height());
       });
 
-      $('#bishop-' + bishops[index].name).on('mouseleave', function(e) {
+      $('#bishop-' + bishops[index].index).on('mouseleave', function(e) {
         bishopPopover.visible = false;
       });
     };
@@ -513,8 +515,8 @@ function addChurch(county) {
 
 function generateBishop() {
   return new Bishop(
-    'Mccreepy-San' + (game.bishops.length + _.union(_.map(game.pendingBishops, function(n) { return n;})).length),
-    'bishop' + randRange(0, 3) + '.png',
+    getBishopName(),
+    'bishop' + randRange(0, 4) + '.png',
     randRange(0, 101), // charisma
     randRange(0, 101), // fervor
     randRange(45, 100), // loyalty

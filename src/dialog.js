@@ -12,8 +12,13 @@ function isDialogOpen() {
 
 function closeDialog(e, d) {
   console.log('closed');
+
+  if(d.closeFn) {
+    d.closeFn(d);
+  }
   
   d.entity.attr({visible: false});
+  d.entity.replace('');
   dialogCloseEvent = e;
 
   dialogNumOpen--;
@@ -44,7 +49,7 @@ function openDialog(name, templateData) {
   }
 }
 
-function loadDialog(name, configFn, openFn) {
+function loadDialog(name, configFn, openFn, closeFn) {
   $.get('html/' + name + '.html', function(data) {
     var template = doT.template(data);
     var entity = Crafty.e('2D, DOM, HTML, Mouse').attr({x: 0, y: -Crafty.viewport.y, z: 10000, w: canvasWidth, h: canvasHeight});
@@ -53,7 +58,8 @@ function loadDialog(name, configFn, openFn) {
       name: name,
       entity: entity,
       template: template,
-      configFn: configFn
+      configFn: configFn,
+      closeFn: closeFn
     };
     dialogs.push(obj);
 

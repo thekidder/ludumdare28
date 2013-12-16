@@ -10,10 +10,10 @@
           <div id="error"></div>
           <div id="alerts"></div>
           {{~ it.bishops :v }}
-          <div id="bishop-{{=v.name}}" class="bishop-container">
+          <div id="bishop-{{=v.index}}" class="bishop-container">
             <div class="text-center bishop-img">
               <img src="assets/bishops/{{=v.img}}" /><br/>
-              {{=v.name}}
+              <small>{{=v.name}}</small>
             </div>
           </div>
           {{~}}

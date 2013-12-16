@@ -27,22 +27,22 @@
             <div class="bishop-container">
               <div class="text-center bishop-img">
                 {{? it.church.level == 1 }}
-                <img src="assets/church-small.jpg" /><br/>
+                <img src="assets/church_small.png" /><br/>
                 Small Church
                 {{?? it.church.level == 2 }}
                 <img src="assets/church-small.jpg" /><br/>
                 Medium Church
                 {{?? true }}
-                <img src="assets/church-small.jpg" /><br/>
+                <img src="assets/church_large.png" /><br/>
                 Mega Church
                 {{?}}
               </div>
             </div>
             {{? it.bishop}}
-            <div class="bishop-container" id="bishop-{{=it.bishop.name}}">
+            <div class="bishop-container" id="bishop-{{=it.bishop.index}}">
               <div class="text-center bishop-img">
                 <img src="assets/bishops/{{=it.bishop.img}}" /><br/>
-                {{=it.bishop.name}}
+                <small>{{=it.bishop.name}}</small>
               </div>
             </div>
             {{?? true }}
