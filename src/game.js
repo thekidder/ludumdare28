@@ -490,6 +490,7 @@ function addChurch(county) {
 function generateBishop() {
   return new Bishop(
     'Mccreepy-San' + (game.bishops.length + _.union(_.map(game.pendingBishops, function(n) { return n;})).length),
+    'bishop' + randRange(0, 3) + '.png',
     randRange(0, 101),
     randRange(0, 101),
     randRange(0, 101),
