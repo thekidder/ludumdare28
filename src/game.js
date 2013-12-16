@@ -238,7 +238,7 @@ function updateConverts(county) {
   }
 
   growth -= county.fervorTitheModifier() * county.tithe
-  growth -= 0.1 * county.hostility;
+  growth -= 0.05 * county.hostility;
   county.converts = clamp(Math.round(county.converts * (1 + growth/100)), 0, county.population);
 }
 
