@@ -1,6 +1,6 @@
 var mapOptions = {
   width: 28,
-  height: 50,
+  height: 42,
   tileWidth: 20,
   tileHeight: 20,
   numCounties: 40
@@ -40,21 +40,21 @@ function randRange(low, high) {
 }
 
 function openBishopDialog() {
-  openDialog('bishop', {bishops: bishops});
+  openDialog('bishop', {bishops: game.bishops});
 
-  for(var i = 0; i < bishops.length; ++i) {
+  for(var i = 0; i < game.bishops.length; ++i) {
     var fn = function() {
       var index = i;
-      $('#bishop-' + bishops[index].name).on('mouseenter', function(e) {
-        bishopPopover.replace(bishopPopoverTemplate(bishops[index]));
+      $('#bishop-' + game.bishops[index].name).on('mouseenter', function(e) {
+        bishopPopover.replace(bishopPopoverTemplate(game.bishops[index]));
         bishopPopover.visible = true;
       });
 
-      $('#bishop-' + bishops[index].name).on('mousemove', function(e) {
+      $('#bishop-' + game.bishops[index].name).on('mousemove', function(e) {
         bishopPopover.attr({x: e.clientX - $('#game').offset().left + 10, y: e.clientY - $('#game').offset().top + 10})
       });
 
-      $('#bishop-' + bishops[index].name).on('mouseleave', function(e) {
+      $('#bishop-' + game.bishops[index].name).on('mouseleave', function(e) {
         bishopPopover.visible = false;
       });
     };
@@ -116,7 +116,7 @@ $(document).ready(function() {
 
   $.get("html/tooltip.html", function(data) {
     tooltipData = doT.template(data);
-    tooltip = Crafty.e('2D, DOM, HTML').attr({x: 0, y: 0, z: 10000});
+    tooltip = Crafty.e('2D, DOM, HTML').attr({x: 4, y: -Crafty.viewport.y + canvasHeight - 140, z: 10000, visible: false});
   });
 
   $.get("html/bishop_popover.html", function(data) {
@@ -162,6 +162,10 @@ function toMoneyFormat(amount) {
   return '$' + intPart + DecimalSeparator + decPart;
 }
 
+function toPopulationFormat(amount) {
+  return amount.toLocaleString();
+}
+
 function addChurch(county) {
   county.church = new Church();
   var cell = county.cells[randRange(0, county.cells.length)];
@@ -201,14 +205,14 @@ function generateCounties() {
 
   for(var i = 0; i < mapOptions.numCounties; ++i) {
     var low = 2500 * game.counties[i].cells.length;
-    var high = 15000 * game.counties[i].cells.length;
+    var high = 145000 * game.counties[i].cells.length;
     game.counties[i].population = randRange(low, high);
     game.counties[i].converts = 0;
   }
 }
 
 function generateMap() {
-  var scale = 3.778624246;
+  var scale = 4.618624246;
   var xOffset = Math.floor(Math.random() * 1000);
   var yOffset = Math.floor(Math.random() * 1000);
 
@@ -219,8 +223,8 @@ function generateMap() {
   for(var i = 0; i < mapOptions.width; ++i) {
     for(var j = 0; j < mapOptions.height; ++j) {
       var height = center.distanceSq(new Crafty.math.Vector2D(i / (mapOptions.width - 1), j / (mapOptions.height - 1)));
-      height *= 3;
-      height -= 0.5;
+      height *= 2;
+      height -= 0.4;
 
       if(noise.perlin2(i / scale + xOffset, j / scale + yOffset) + height > 0.1) {
         game.map.cell(i, j).land = false;
@@ -299,6 +303,7 @@ function generateMap() {
               }
               console.log(x + ', ' + y + ': ' + game.map.cell(x, y).county);
 
+              tooltip.visible = false;
               var county = game.map.cell(x,y).county;
               openDialog('county', game.counties[county - 1]);
               var bishop = {name: 'A'};
@@ -321,29 +326,14 @@ function generateMap() {
 
               var html = tooltipData(game.counties[county - 1]);
               tooltip.replace(html);
+              tooltip.visible = true;
 
-              $('#county-popover').removeClass('hidden');
-              $('#county-popover').addClass('visible');
-            })
-            .bind('MouseMove', function(e) {
-              var tooltipX = e.layerX;
-              if(e.layerX > canvasWidth / 2) {
-                var tooltipX = e.layerX - 270;
-              }
-
-              var tooltipY = e.layerY;
-              if(e.layerY > canvasHeight / 2) {
-                var tooltipY = e.layerY - 145;
-              }
-
-              tooltip.attr({x: tooltipX, y: tooltipY});
             })
             .bind('MouseOut', function() {
               var county = game.map.cell(x,y).county;
               game.counties[county - 1].setHighlight(false);
 
-              $('#county-popover').addClass('hidden');
-              $('#county-popover').removeClass('visible');
+              tooltip.visible = false;
             });
           game.map.cell(i, j).entity = e;
           iso.place(i, j, 0, e);

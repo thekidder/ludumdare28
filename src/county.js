@@ -69,6 +69,10 @@ function County(name, population, converts, skepticism, income) {
   this.income = income;
   this.incomeStr = toMoneyFormat(income);
 
+  this.__defineGetter__("populationStr", function() {
+    return toPopulationFormat(this.population);
+  })
+
   this.cells = [];
 
   this.bishop = undefined;
