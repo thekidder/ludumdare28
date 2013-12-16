@@ -137,7 +137,8 @@ $(document).ready(function() {
 
   game.bishops = [{name: 'A'}, {name: 'B'}];
 
-  var startingCounty = game.counties[randRange(0, game.counties.length)];
+  var countiesByLucrativeness = _.sortBy(game.counties, function(c) { return c.lucrativeness();});
+  var startingCounty = countiesByLucrativeness[randRange(0, 4)];
   addChurch(startingCounty);
   startingCounty.bishop = generateBishop();
 
@@ -189,7 +190,7 @@ function generateCounties() {
   game.counties = Array(mapOptions.numCounties);
   for(var i = 0; i < mapOptions.numCounties; ++i) {
     game.counties[i] = new County(
-      countyNames[randRange(0, countyNames.length)],
+      countyNames[i],
       0,
       0,
       skepticisms[randRange(0, skepticisms.length)],

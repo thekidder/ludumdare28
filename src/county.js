@@ -61,6 +61,8 @@ var countyNames = [
   'Taylor'
 ];
 
+countyNames = _.shuffle(countyNames);
+
 function County(name, population, converts, skepticism, income) {
   this.name = name;
   this.population = population;
@@ -69,9 +71,11 @@ function County(name, population, converts, skepticism, income) {
   this.income = income;
   this.incomeStr = toMoneyFormat(income);
 
-  this.__defineGetter__("populationStr", function() {
-    return toPopulationFormat(this.population);
-  })
+  Object.defineProperty(this, "populationStr", {
+    get: function() {
+      return toPopulationFormat(this.population);
+    }
+  });
 
   this.cells = [];
 
@@ -79,6 +83,10 @@ function County(name, population, converts, skepticism, income) {
   this.church = undefined;
 
   this.blurb = 'The citizens of ' + this.name + ' are enthused about Godtology. They wake up every morning with a spring in their step and fewer dollars in their pockets.';
+
+  this.lucrativeness = function() {
+    return this.population * this.income;
+  }
 
   this.setHighlight = function(h) {
     for(var i = 0; i < this.cells.length; ++i) {
