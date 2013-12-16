@@ -48,6 +48,7 @@
 }
 
 .bishop-container {
+  display: inline-block;
   border: 1px solid #ccc;
   border-radius: 10px;
   width: 160px;
@@ -71,6 +72,7 @@
 }
 
 .btn-add-bishop {
+  white-space: normal;
   border-radius: 40px;
   margin: auto;
   position: absolute;
@@ -90,11 +92,11 @@
   display: none !important;
 }
 
-.county-popover {
+.info-popover {
   background-color: rgba(255, 255, 255, 0.75);
 }
 
-.county-popover dl {
+.info-popover dl {
   margin-bottom: 0px;
   width: 280px;
 }

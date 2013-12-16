@@ -15,8 +15,36 @@ var HUDButtons;
 var tooltip;
 var tooltipData;
 
+var bishopPopover;
+var bishopPopoverTemplate;
+
+var bishops;
+  
 function randRange(low, high) {
   return Math.floor(Math.random() * (high - low)) + low;
+}
+
+function openBishopDialog() {
+  openDialog('bishop', {bishops: bishops});
+
+  for(var i = 0; i < bishops.length; ++i) {
+    var fn = function() {
+      var index = i;
+      $('#bishop-' + bishops[index].name).on('mouseenter', function(e) {
+        bishopPopover.replace(bishopPopoverTemplate(bishops[index]));
+        bishopPopover.visible = true;
+      });
+
+      $('#bishop-' + bishops[index].name).on('mousemove', function(e) {
+        bishopPopover.attr({x: e.clientX - $('#game').offset().left + 10, y: e.clientY - $('#game').offset().top + 10})
+      });
+
+      $('#bishop-' + bishops[index].name).on('mouseleave', function(e) {
+        bishopPopover.visible = false;
+      });
+    };
+    fn();
+  }
 }
 
 $(document).ready(function() {
@@ -72,16 +100,23 @@ $(document).ready(function() {
     tooltip = Crafty.e('2D, DOM, HTML').attr({x: 0, y: 0, z: 10000});
   });
 
+  $.get("html/bishop_popover.html", function(data) {
+    bishopPopoverTemplate = doT.template(data);
+    bishopPopover = Crafty.e('2D, DOM, HTML').attr({x: 0, y: 0, z: 20000});
+  });
+
   $.get("html/button_bar.html", function(data) {
     HUDButtons = Crafty.e('2D, DOM, HTML').attr({x: canvasWidth - 168, y: -Crafty.viewport.y + canvasHeight - 84, z: 9999, w: 180})
       .replace(data);
-    $('#manage-bishops').on('click', function() {openDialog('bishop');});
+    $('#manage-bishops').on('click', openBishopDialog);
   });
 
   loadDialog('county');
   loadDialog('bishop');
 
   $('#manage-bishops').tooltip({delay: { show: 1000}});
+
+  bishops = [{name: 'A'}, {name: 'B'}];
 });
 
 function generateMap() {
@@ -198,6 +233,19 @@ function generateMap() {
 
               var county = map.cell(x,y).county;
               openDialog('county', counties[county - 1]);
+              var bishop = {name: 'A'};
+              $('#bishop-' + bishop.name).on('mouseenter', function(e) {
+                bishopPopover.replace(bishopPopoverTemplate(bishop));
+                bishopPopover.visible = true;
+              });
+
+              $('#bishop-' + bishop.name).on('mousemove', function(e) {
+                bishopPopover.attr({x: e.clientX - $('#game').offset().left + 10, y: e.clientY - $('#game').offset().top + 10})
+              });
+
+              $('#bishop-' + bishop.name).on('mouseleave', function(e) {
+                bishopPopover.visible = false;
+              });
             })
             .bind('MouseOver', function(e) {
               var county = map.cell(x,y).county;

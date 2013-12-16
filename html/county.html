@@ -21,7 +21,7 @@
           </div>
         </div>
         <div class="row">
-        {{? it.church}}
+          {{? it.church}}
           <div class="col-sm-4">
             <div class="bishop-container">
               <div class="text-center bishop-img">
@@ -29,7 +29,7 @@
                 Small Church
               </div>
             </div>
-            <div class="bishop-container">
+            <div class="bishop-container" id="bishop-{{=it.bishop.name}}">
               {{? it.bishop}}
               <div class="text-center bishop-img">
                 <img src="assets/bishop.jpg" /><br/>

@@ -5,7 +5,30 @@
         <a id="county-window-close" class="close" aria-hidden="true" href="javascript:closeCountyWindow()">&times;</a>
         <h4 class="modal-title">Bishop Seminary</h4>
       </div>
-      <div class="modal-body">
+      <div class="modal-body clearfix">
+        <div class="text-center">
+          {{~ it.bishops :v }}
+          <div id="bishop-{{=v.name}}" class="bishop-container">
+            <div class="text-center bishop-img">
+              <img src="assets/bishop.jpg" /><br/>
+              {{=v.name}}
+            </div>
+          </div>
+          {{~}}
+          {{? it.bishops.length < 3 }}
+          <div class="bishop-container">
+            <button class="btn btn-default btn-add-bishop">
+              <span class="glyphicon glyphicon-plus"></span><br/>
+              Recruit Bishop
+            </button> 
+            {{?}}
+          </div>
+        </div>
+        <div>
+          <dl class="dl-horizontal">
+            <dt>
+          </dl>
+        </div>
       </div>
     </div>
   </div>
