@@ -128,6 +128,8 @@ $(document).ready(function() {
   loadDialog('county', countyDialogConfig);
   loadDialog('bishop', bishopDialogConfig);
   loadDialog('bishop_add', bishopAddDialogConfig);
+  loadDialog('info', function() {})
+  loadDialog('end_turn', function() {})
 
   $('#manage-bishops').tooltip({delay: { show: 1000}});
 
@@ -141,7 +143,17 @@ $(document).ready(function() {
   startingCounty.converts = randRange(90, 110);
 
   updateGlobalStateUI();
+
+  loadDialog('begin_game', beginGameDialogConfig, function() { openDialog('begin_game', {});});
 });
+
+function beginGameDialogConfig(obj) {
+  $('#start').on('click', function() {
+    var name = $('#religion-name-input').val();
+    game.name = name;
+    updateGlobalStateUI();
+  });
+}
 
 function countyDialogConfig(county) {
   var bishop = county.bishop;
@@ -263,6 +275,7 @@ function bishopDialogMouseovers(bishops) {
 }
 
 function updateGlobalStateUI() {
+  $('#religion-name').html(game.name);
   $('#week-num').html(game.month);
   $('#num-followers').html(game.totalFollowers());
   $('#treasury').html(toMoneyFormat(game.money));
@@ -332,6 +345,14 @@ function endTurn() {
 
   ++game.month;
   updateGlobalStateUI();
+
+  var events = [];
+
+  if(events.length == 0) {
+    events = [defaultEvent];
+  }
+
+  openDialog('end_turn', {title: 'Month ' + game.month, events: events});
 }
 
 function updateFervor(county) {

@@ -2,17 +2,19 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <a id="county-window-close" class="close" aria-hidden="true">&times;</a>
+        <a id="county-window-close" class="close close-button" aria-hidden="true">&times;</a>
         <h4 class="modal-title">{{=it.title}}</h4>
       </div>
       <div class="modal-body clearfix">
         <div class="text-center">
           <div id="alerts"></div>
-          {{=it.text}}
+          {{~ it.events :v }}
+            <p><strong>{{=v.title}}</strong> {{=v.text}}</p>
+          {{~}}
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" class="close-button">OK</button>
+        <button type="button" class="btn btn-primary close-button">OK</button>
       </div>
     </div>
   </div>

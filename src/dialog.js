@@ -33,7 +33,7 @@ function openDialog(name, templateData) {
       //dialogs[i].entity.addComponent('Mouse');
       dialogs[i].entity.attr({visible: true, z: 10000 + dialogNumOpen});
       //$('#' + name + '-dialog').addClass('visible');
-      $('.close').on('click', function(e) { closeDialog(e, dialogs[i]);});
+      $('.close-button').on('click', function(e) { closeDialog(e, dialogs[i]);});
       dialogs[i].close = function(e) { var ind = i; closeDialog(e, dialogs[ind]);};
 
       dialogs[i].configFn(templateData, dialogs[i]);
@@ -44,7 +44,7 @@ function openDialog(name, templateData) {
   }
 }
 
-function loadDialog(name, configFn) {
+function loadDialog(name, configFn, openFn) {
   $.get('html/' + name + '.html', function(data) {
     var template = doT.template(data);
     var entity = Crafty.e('2D, DOM, HTML, Mouse').attr({x: 0, y: -Crafty.viewport.y, z: 10000, w: canvasWidth, h: canvasHeight});
@@ -56,5 +56,9 @@ function loadDialog(name, configFn) {
       configFn: configFn
     };
     dialogs.push(obj);
+
+    if(openFn) {
+      openFn();
+    }
   });
 }

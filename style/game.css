@@ -40,6 +40,15 @@
   background-color: rgba(0, 0, 0, 0.7);
 }
 
+#religion-name-input {
+  display: inline;
+  width: 80px;
+  text-align: center;
+  border: 0px;
+  border-bottom: 1px dashed #aaa;
+  color: #333;
+}
+
 #game {
   display: block;
   margin-left: auto;

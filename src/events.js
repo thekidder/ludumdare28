@@ -1,0 +1,1 @@
+var defaultEvent = {title: 'A quiet month.', text: 'This is probably a good thing!'};
