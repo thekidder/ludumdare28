@@ -123,6 +123,8 @@ $(document).ready(function() {
     $('#manage-bishops').on('click', openBishopDialog);
 
     $('#end-turn').on('click', endTurn);
+
+    $('.show-tooltip').each(function() {$(this).tooltip({delay: { show: 1000}}) });
   });
 
   loadSnippet('error');
@@ -134,8 +136,6 @@ $(document).ready(function() {
   loadDialog('info', function() {})
   loadDialog('end_turn', function() {})
   loadDialog('end_game', function() {});
-
-  $('#manage-bishops').tooltip({delay: { show: 1000}});
 
   game.bishops.push(generateBishop());
 
@@ -198,6 +198,7 @@ function countyDialogConfig(county) {
       }
       $(this).val(tithe);
       county.tithe = tithe;
+      openDialog('county', county);
     });
 
     $('#bishop-pay').on('change', function(e) {
@@ -323,15 +324,15 @@ function toFuzzyFormat(amount) {
     return 'None';
   }
   if(amount < 20) {
-    return 'Very Low (' + amount + ')';
+    return 'Very Low';
   } else if(amount < 40) {
-    return 'Low (' + amount + ')';
+    return 'Low';
   } else if(amount < 60) {
-    return 'Moderate (' + amount + ')';
+    return 'Moderate';
   } else if(amount < 80) {
-    return 'High (' + amount + ')';
+    return 'High';
   } else {
-    return 'Very High (' + amount + ')';
+    return 'Very High';
   }
 }
 

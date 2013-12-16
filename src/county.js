@@ -123,26 +123,30 @@ function County(name, population, converts, income, hostility, fervor) {
     get: function() {
       var g = this.growth;
       console.log('growth is ' + g);
-      if(g > 0) {
-        var s = '<span class="text-success">';
-        var sym = '+';
-      } else {
-        var s = '<span class="text-danger">';
-        var sym = '-';
+
+      if(!this.church || !this.bishop) {
+        return '<span class="text-danger">None</span>';
       }
 
-      g = Math.abs(Math.round(g / 0.04));
-
-      if(g == 0) {
+      if(g < -0.25) {
+        return '<span class="small text-danger">Extremely Negative</span>';
+      } else if(g < -0.15) {
+        return '<span class="text-danger">Very Negative</span>';
+      } else if(g < -0.10) {
+        return '<span class="text-danger">Negative</span>';
+      } else if(g < -0.01) {
+        return '<span class="text-danger">Slightly Negative</span>';
+      } else if(g < 0.01) {
         return '<span class="text-warning">Stable</span>';
+      } else if(g < 0.10) {
+        return '<span class="text-success">Slightly Positive</span>';
+      } else if(g < 0.15) {
+        return '<span class="text-success">Positive</span>';
+      } else if(g < 0.25) {
+        return '<span class="text-success">Very Positive</span>';
+      } else {
+        return '<span class="small text-success">Extremely Positive</span>';
       }
-
-      var t = '';
-      for(var i = 0; i < Math.min(12, g); ++i) {
-        t += sym;
-      }
-
-      return s + t + '</span>';
     }
   });
 

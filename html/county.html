@@ -9,16 +9,16 @@
         <div class="row">
           <div class="col-sm-6">
             <dl class="dl-horizontal dl-compact">
-              <dt>Population</dt><dd>{{=it.populationStr}}</dd>
-              <dt>Followers</dt><dd>{{=it.convertsStr}}</dd>
-              <dt>Median Income</dt><dd>{{=it.incomeStr}}</dd>
+              <dt class="show-tooltip" title="You do know what population means, don't you?">Population</dt><dd>{{=it.populationStr}}</dd>
+              <dt class="show-tooltip" title="More followers = MORE MONEY.">Followers</dt><dd>{{=it.convertsStr}}</dd>
+              <dt class="show-tooltip" title="What's better, rich minions or poor minions?">Median Income</dt><dd>{{=it.incomeStr}}</dd>
             </dl>
           </div>
           <div class="col-sm-6">
             <dl class="dl-horizontal dl-compact">
-              <dt>Hostility</dt><dd>{{=it.hostilityStr}}</dd>
-              <dt>Fervor</dt><dd>{{=it.fervorStr}}</dd>
-              <dt>Current Growth</dt><dd>{{=it.growthEstimate}}</dd>
+              <dt class="show-tooltip" title="What? People hate you? That can't be right...">Hostility</dt><dd>{{=it.hostilityStr}}</dd>
+              <dt class="show-tooltip" title="If your followers love you more, they'll be OK with giving you more money. Simple!">Fervor</dt><dd>{{=it.fervorStr}}</dd>
+              <dt class="show-tooltip" title="GAIN ALL THE MINIONS!">Current Growth</dt><dd>{{=it.growthEstimate}}</dd>
             </dl>
           </div>
         </div>
@@ -60,16 +60,16 @@
           <p>{{=it.blurb}}</p>
           <div class="text-center">
             {{? it.church.level < 3 }}
-            <button id="expand-church" type="button" class="btn btn-default btn-sm">
+            <button id="expand-church" type="button" class="btn btn-default btn-sm show-tooltip" title="Bigger church: pack in more people. More people: profit!">
               <span class="glyphicon glyphicon-plus"></span><br/>
               Expand Church
             </button>
             {{?}}
-            <button id="spread-pamphlets" type="button" class="btn btn-default btn-sm">
+            <button id="spread-pamphlets" type="button" class="btn btn-default btn-sm show-tooltip" title="People will hate you less if you go door-to-door and bring them fancy literature. Right?">
               <span class="glyphicon glyphicon-book"></span><br/>
               Spread Pamphlets
             </button>
-            <button id="remove-bishop" type="button" class="btn btn-default btn-sm">
+            <button id="remove-bishop" type="button" class="btn btn-default btn-sm show-tooltip" title="Sometimes you just need a better bishop">
               <span class="glyphicon glyphicon-minus"></span><br/>
               Remove Bishop
             </button>
@@ -79,14 +79,14 @@
               <label for="bishop-pay" class="col-xs-6">Bishop Pay</label>
               <div class="input-group" class="col-xs-6">
                 <span class="input-group-addon">$</span>
-                <input id="bishop-pay" type="text" class="form-control" value="{{=it.bishopPay}}">
+                <input id="bishop-pay" type="text" class="form-control show-tooltip" value="{{=it.bishopPay}}" title="Your bishop might leave the church if you don't pay him enough. Wouldn't that be a shame?">
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group">  
               <label for="tithe" class="col-xs-6">Tithe Requirement</label>
               <div class="input-group" class="col-xs-6">
-                <input id="tithe" type="text" class="form-control" value="{{=it.tithe}}">
+                <input id="tithe" type="text" class="form-control show-tooltip" value="{{=it.tithe}}" title="Percentage of your followers' incomes to collect (uh, voluntarily). A shame you can't just leave this at 100% all the time.">
                 <span class="input-group-addon">%</span>
               </div>
             </div>

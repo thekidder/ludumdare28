@@ -44,6 +44,8 @@ function openDialog(name, templateData) {
       dialogs[i].configFn(templateData, dialogs[i]);
 
       dialogNumOpen++;
+
+      $('.show-tooltip').each(function() {$(this).tooltip({delay: { show: 1000}}) });
       break;
     }
   }
