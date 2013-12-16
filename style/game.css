@@ -61,9 +61,10 @@
   border: 1px solid #ccc;
   border-radius: 10px;
   width: 160px;
-  height: 120px;
+  height: 130px;
   position: relative;
   margin-bottom: 10px;
+  white-space: normal;
 }
 
 .bishop-img {

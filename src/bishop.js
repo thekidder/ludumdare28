@@ -189,6 +189,21 @@ var bishopNames = [
   'Frederick William Freking'
 ];
 
+var bishopTitles = [
+  'The Archbishop',
+  'His Holiness',
+  'His Most High',
+  'The Great',
+  'The Reverend',
+  'Elder',
+  'High Priest',
+  'Patriarch',
+  'The Deacon',
+  'The Beacon of Truth',
+  'Cardinal',
+  'God\'s Man'
+];
+
 bishopNames = _.shuffle(bishopNames);
 
 var bishopCurrentName = 0; 
@@ -200,6 +215,9 @@ function getBishopName() {
 }
 
 function Bishop(name, img, charisma, fervor, loyalty, pennypinching) {
+  if(Math.random() < 0.4) {
+    name = bishopTitles[randRange(0, bishopTitles.length)] + ' ' + name;
+  }
   this.index = bishopCurrentName;
   this.name = name;
   this.img = img;
