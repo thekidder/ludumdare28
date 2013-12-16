@@ -103,6 +103,9 @@
 
 .info-popover {
   background-color: rgba(255, 255, 255, 0.75);
+}
+
+#county-popover {
   max-width: 600px;
   width: 600px;
 }

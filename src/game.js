@@ -210,6 +210,7 @@ function countyDialogConfig(county) {
       }
       $(this).val(pay);
       county.bishopPay = pay;
+      openDialog('county', county);
     });
 
     $('#expand-church').on('click', function() {
