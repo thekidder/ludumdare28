@@ -29,3 +29,4 @@ addEvent('default', 'A quiet month.', 'This is probably a good thing!');
 addEvent('running_dry', 'Your Treasury is low!', 'You only have {{=it}} left! Try decreasing some costs.');
 addEvent('debt', 'You are in debt!', 'You\'re borrowing money! If you are in debt by over {{=it}}, you will go bankrupt!');
 addEvent('bishop_defect', 'Bishop Defects in {{=it}}!', '{{=it.bishop}} has defected from {{=it.religion}}! No good can come of this!');
+addEvent('new_bishop', 'Your scouts have found a new bishop!', '{{=it}} will be your loyal follower from now until his death.');

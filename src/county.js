@@ -76,6 +76,8 @@ function County(name, population, converts, income, hostility, fervor) {
   this.incomeStr = toMoneyFormat(income);
   this.tithe = 5;
   this.bishopPay = this.income;
+  this.growthShock = 0;
+  this.spreadPamphlets = false;
 
   Object.defineProperty(this, 'hostilityDrift', {
     get: function() {
@@ -115,13 +117,15 @@ function County(name, population, converts, income, hostility, fervor) {
       growth -= (this.fervorTitheModifier() * Math.pow(this.tithe, 2)) / 5;
       growth -= 0.05 * this.hostility;
 
-      return growth * 0.01;
+      return (growth + this.growthShock) * 0.01;
     }
   });
 
   Object.defineProperty(this, 'growthEstimate', {
     get: function() {
       var g = this.growth;
+
+      console.log('g:' + g);
 
       if(!this.church || !this.bishop) {
         return '<span class="text-danger">None</span>';
@@ -213,13 +217,25 @@ function County(name, population, converts, income, hostility, fervor) {
     }
   });
 
+  Object.defineProperty(this, 'blurb', {
+    get: function() {
+      if(this.fervor < 40) {
+        return 'The citizens of ' + this.name + ' distrust ' + game.name + '. Most call us a cult and protests outside the church steps are not uncommon. Oh well.';
+      } else if(this.fervor < 60) {
+        return 'The citizens of ' + this.name + ' are becoming more used to ' + game.name + '. More and more people are celebrating the five or six or seven (who\'s keeping track?) holiday events held each year. Probably helps that kids get the day off of school!';
+      } else {
+        return 'The citizens of ' + this.name + ' are enthused about ' + game.name + '. They wake up every morning with a spring in their step and fewer dollars in their pockets.';
+      }
+    }
+  });
+
   this.cells = [];
   this.neighbors = [];
 
   this.bishop = undefined;
   this.church = undefined;
 
-  this.blurb = 'The citizens of ' + this.name + ' are enthused about Godtology. They wake up every morning with a spring in their step and fewer dollars in their pockets.';
+  this.blurb = 
 
   this.lucrativeness = function() {
     return this.population * this.income;

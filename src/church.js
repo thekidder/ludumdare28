@@ -49,4 +49,12 @@ function Church() {
       return 250000;
     }
   }
+
+  this.followersGainedOnExpand = function() {
+    if(this.level == 1) {
+      return 500;
+    } else {
+      return 1500;
+    }
+  }
 }

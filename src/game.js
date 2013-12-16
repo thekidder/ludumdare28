@@ -345,10 +345,12 @@ function endTurn() {
   game.counties.forEach(updateHostility);
   game.counties.forEach(updateMoney);
   game.counties.forEach(function(county) { updateBishopDefections(county, events);});
+  game.counties.forEach(function(county) { county.spreadPamphlets = false; });
 
   if(game.pendingBishops[game.month]) {
     game.pendingBishops[game.month].forEach(function(b) {
       game.bishops.push(b);
+      events.push(getEvent('new_bishop', {}, b.name));
     });
 
     delete game.pendingBishops[game.month];
@@ -362,7 +364,7 @@ function endTurn() {
   }
 
   if(game.money < -game.maxDebt) {
-    openDialog('end_game', {class: 'text-danger', title: 'Backrupt', text: 'You\'ve gone bankrupt. This is the end of the line for ' + game.name});
+    openDialog('end_game', {class: 'text-danger', title: 'Backrupt', text: 'You\'ve gone bankrupt. This is the end of the line for ' + game.name + '!'});
   } else if(game.money > 2000000 && game.totalFollowers() > 1000000) {
     openDialog('end_game', {class: 'text-success', title: 'You Win!', text: 'Well. A multi-millionaire and hundreds of thousands of people praising your name. Must feel pretty good, huh?'});
   } else {
@@ -390,6 +392,9 @@ function updateConverts(county) {
 
   var growth = county.growth;
   county.converts = clamp(Math.round(county.converts * (1 + growth)), min, Math.min(county.population, churchMax));
+
+  var amt = Math.min(Math.abs(county.growthShock), 0.5);
+  county.growthShock -= sign(county.growthShock) * amt;
 }
 
 function updateHostility(county) {
@@ -449,7 +454,9 @@ function spreadPamphlets(county) {
   } else {
     var amt = randRange(2, 8);
     game.money -= cost;
-    county.hostility -= amt
+    county.hostility -= amt;
+    county.growthShock += randRangeFloat(1.0, 5.0);
+    county.spreadPamphlets = true;
 
     updateGlobalStateUI();
     openDialog('county', county);
@@ -481,7 +488,10 @@ function expandChurch(county) {
     signalError('Not enough money! You need ' + toMoneyFormat(cost));
   } else {
     game.money -= cost;
+
+
     county.church.entity.removeComponent('church' + county.church.level);
+    county.converts += county.church.followersGainedOnExpand();
     county.church.level += 1;
     county.church.entity.addComponent('church' + county.church.level);
 
