@@ -30,7 +30,8 @@ var game = {
 
   month: 1,
   money: 20000,
-  pendingBishops: {}
+  pendingBishops: {},
+  maxDebt: 10000
 };
 
 function openBishopDialog() {
@@ -132,6 +133,7 @@ $(document).ready(function() {
   loadDialog('bishop_add', bishopAddDialogConfig);
   loadDialog('info', function() {})
   loadDialog('end_turn', function() {})
+  loadDialog('end_game', function() {});
 
   $('#manage-bishops').tooltip({delay: { show: 1000}});
 
@@ -359,7 +361,13 @@ function endTurn() {
     events = getDefaultEvents(game.money, lastMoney)
   }
 
-  openDialog('end_turn', {title: 'Month ' + game.month, events: events});
+  if(game.money < -game.maxDebt) {
+    openDialog('end_game', {class: 'text-danger', title: 'Backrupt', text: 'You\'ve gone bankrupt. This is the end of the line for ' + game.name});
+  } else if(game.money > 2000000 && game.totalFollowers() > 1000000) {
+    openDialog('end_game', {class: 'text-success', title: 'You Win!', text: 'Well. A multi-millionaire and hundreds of thousands of people praising your name. Must feel pretty good, huh?'});
+  } else {
+    openDialog('end_turn', {title: 'Month ' + game.month, events: events});
+  }
 }
 
 function updateFervor(county) {
@@ -381,7 +389,7 @@ function updateConverts(county) {
   }
 
   var growth = county.growth;
-  county.converts = clamp(Math.round(county.converts * (1 + growth/100)), min, Math.min(county.population, churchMax));
+  county.converts = clamp(Math.round(county.converts * (1 + growth)), min, Math.min(county.population, churchMax));
 }
 
 function updateHostility(county) {
@@ -403,9 +411,9 @@ function updateMoney(county) {
 
   if(county.church) {
     if(county.bishop) {
-      var upkeepRatio = (100 - county.bishop.pennypinching) / 100;
+      var upkeepRatio = (200 - county.bishop.pennypinching) / 100;
     } else {
-      var upkeepRatio = 1;
+      var upkeepRatio = 2;
     }
     profit -= county.church.upkeep() * upkeepRatio;
   }

@@ -122,6 +122,7 @@ function County(name, population, converts, income, hostility, fervor) {
   Object.defineProperty(this, 'growthEstimate', {
     get: function() {
       var g = this.growth;
+      console.log('growth is ' + g);
       if(g > 0) {
         var s = '<span class="text-success">';
         var sym = '+';
