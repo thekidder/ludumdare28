@@ -377,9 +377,15 @@ function updateConverts(county) {
     min = 0;
   }
 
+  if(county.church) {
+    var churchMax = county.church.maxConverts();
+  } else {
+    var churchMax = county.population;
+  }
+
   growth -= county.fervorTitheModifier() * county.tithe
   growth -= 0.05 * county.hostility;
-  county.converts = clamp(Math.round(county.converts * (1 + growth/100)), min, county.population);
+  county.converts = clamp(Math.round(county.converts * (1 + growth/100)), min, Math.min(county.population, churchMax));
 }
 
 function updateHostility(county) {
@@ -446,7 +452,6 @@ function recruitBishop(bishops) {
     game.pendingBishops[game.month + delay].push(generateBishop());
 
     updateGlobalStateUI();
-    //openDialog('bishop', bishops);
   }
 }
 
@@ -470,7 +475,7 @@ function spreadPamphlets(county) {
 }
 
 function buildChurch(county) {
-  var cost = 5000;
+  var cost = 20000;
   if(game.money < cost) {
     signalError('Not enough money! You need ' + toMoneyFormat(cost));
   } else {
@@ -484,11 +489,11 @@ function buildChurch(county) {
 }
 
 function expandChurch(county) {
-  var churchMoney = 10000
-  if(game.money < churchMoney) {
-    signalError('Not enough money! You need ' + toMoneyFormat(churchMoney));
+  var cost = county.church.upgradeCost();
+  if(game.money < cost) {
+    signalError('Not enough money! You need ' + toMoneyFormat(cost));
   } else {
-    game.money -= churchMoney;
+    game.money -= cost;
     county.church.entity.removeComponent('church' + county.church.level);
     county.church.level += 1;
     county.church.entity.addComponent('church' + county.church.level);
