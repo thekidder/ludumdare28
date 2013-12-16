@@ -67,6 +67,7 @@ function County(name, population, converts, income, hostility, fervor) {
   this.name = name;
   this.population = population;
   this.converts = converts;
+  this.minConverts = randRange(8, 16);
   this.hostility = hostility;
   this.hostilityRange = 1.5;
   this.hostilityDriftShock = 0;
