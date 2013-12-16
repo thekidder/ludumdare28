@@ -71,13 +71,12 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
-  bottom: 0;
-  height: 100px;
+  bottom: 10px;
 }
 
 .bishop-img img {
-  height: 80%;
+  max-height: 80%;
+  max-width: 80%;
 }
 
 .btn-add-bishop {

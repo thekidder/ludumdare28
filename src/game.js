@@ -41,13 +41,13 @@ function followMouse(element, canvasX, canvasY, width, height) {
   if(canvasX < canvasWidth / 2) {
     var x = canvasX + 10;
   } else {
-    var x = canvasX - width - 10;
+    var x = canvasX - width - 20;
   }
 
   if(canvasY < canvasHeight / 2) {
     var y = canvasY;
   } else {
-    var y = canvasY - height - 10;
+    var y = canvasY - height - 30;
   }
 
   element.attr({x: x, y: y});
@@ -97,7 +97,9 @@ $(document).ready(function() {
   });
 
   Crafty.sprite(32, "assets/church.png", {
-    churchSmall: [0, 0, 1, 1]
+    church1: [0, 0, 1, 1],
+    church2: [2, 0, 2, 2],
+    church3: [0, 2, 4, 2]
   });
 
   generateMap();
@@ -482,12 +484,22 @@ function buildChurch(county) {
 }
 
 function expandChurch(county) {
-  var churchMoney = 20000
+  var churchMoney = 10000
   if(game.money < churchMoney) {
     signalError('Not enough money! You need ' + toMoneyFormat(churchMoney));
   } else {
     game.money -= churchMoney;
+    county.church.entity.removeComponent('church' + county.church.level);
     county.church.level += 1;
+    county.church.entity.addComponent('church' + county.church.level);
+
+    if(county.church.level == 2) {
+      county.church.entity.y -= 32;
+      county.church.entity.x -= 16;
+    } else {
+      county.church.entity.x -= 32;
+    }
+
     updateGlobalStateUI();
     openDialog('county', county);
   }
@@ -510,7 +522,7 @@ function addChurch(county) {
   var x = cell.entity._x;
   var y = cell.entity._y - 22;
   var z = cell.entity._z + 3000;
-  county.church.entity = Crafty.e('2D, DOM, churchSmall').attr({x:x, y:y, z:z});
+  county.church.entity = Crafty.e('2D, DOM, church1').attr({x:x, y:y, z:z});
 }
 
 function generateBishop() {
