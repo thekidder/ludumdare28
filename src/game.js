@@ -3,11 +3,11 @@ var mapOptions = {
   height: 42,
   tileWidth: 20,
   tileHeight: 20,
-  numCounties: 40
+  numCounties: 30
 };
 
 var canvasWidth = 912;
-var canvasHeight = 480; // 344 is 100% height
+var canvasHeight = 500; // 344 is 100% height
 var mapHeight = mapOptions.height * mapOptions.tileHeight / 4 + (mapOptions.tileHeight / 4 * 3);
 
 var HUDButtons;
@@ -116,7 +116,7 @@ $(document).ready(function() {
 
   $.get("html/tooltip.html", function(data) {
     tooltipData = doT.template(data);
-    tooltip = Crafty.e('2D, DOM, HTML').attr({x: 4, y: -Crafty.viewport.y + canvasHeight - 140, z: 10000, visible: false});
+    tooltip = Crafty.e('2D, DOM, HTML').attr({x: 4, y: -Crafty.viewport.y + canvasHeight - 160, z: 10000, visible: false});
   });
 
   $.get("html/bishop_popover.html", function(data) {
@@ -135,7 +135,7 @@ $(document).ready(function() {
 
   $('#manage-bishops').tooltip({delay: { show: 1000}});
 
-  game.bishops = [{name: 'A'}, {name: 'B'}];
+  game.bishops = [];
 
   var countiesByLucrativeness = _.sortBy(game.counties, function(c) { return c.lucrativeness();});
   var startingCounty = countiesByLucrativeness[randRange(0, 4)];
@@ -167,6 +167,20 @@ function toPopulationFormat(amount) {
   return amount.toLocaleString();
 }
 
+function toFuzzyFormat(amount) {
+  if(amount < 20) {
+    return 'Very Low';
+  } else if(amount < 40) {
+    return 'Low';
+  } else if(amount < 60) {
+    return 'Moderate';
+  } else if(amount < 80) {
+    return 'High';
+  } else {
+    return 'Very High';
+  }
+}
+
 function addChurch(county) {
   county.church = new Church();
   var cell = county.cells[randRange(0, county.cells.length)];
@@ -185,7 +199,6 @@ function generateBishop() {
 }
 
 function generateCounties() {
-  var skepticisms = ['Very low', 'Low', 'Moderate', 'High', 'Very high'];
 
   game.counties = Array(mapOptions.numCounties);
   for(var i = 0; i < mapOptions.numCounties; ++i) {
@@ -193,8 +206,9 @@ function generateCounties() {
       countyNames[i],
       0,
       0,
-      skepticisms[randRange(0, skepticisms.length)],
-      Math.round(Math.random() * 45000 + 30000));
+      Math.round(Math.random() * 45000 + 30000),
+      randRange(0, 101),
+      randRange(0, 101));
   }
 
   for(var i = 0; i < game.map.data.length; ++i) {
@@ -209,11 +223,13 @@ function generateCounties() {
     var high = 145000 * game.counties[i].cells.length;
     game.counties[i].population = randRange(low, high);
     game.counties[i].converts = 0;
+
+    game.counties[i].setNeighbors(game.map);
   }
 }
 
 function generateMap() {
-  var scale = 4.618624246;
+  var scale = 4.818624246;
   var xOffset = Math.floor(Math.random() * 1000);
   var yOffset = Math.floor(Math.random() * 1000);
 
@@ -224,8 +240,8 @@ function generateMap() {
   for(var i = 0; i < mapOptions.width; ++i) {
     for(var j = 0; j < mapOptions.height; ++j) {
       var height = center.distanceSq(new Crafty.math.Vector2D(i / (mapOptions.width - 1), j / (mapOptions.height - 1)));
-      height *= 2;
-      height -= 0.4;
+      height *= 1.8;
+      height -= 0.23;
 
       if(noise.perlin2(i / scale + xOffset, j / scale + yOffset) + height > 0.1) {
         game.map.cell(i, j).land = false;

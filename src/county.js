@@ -63,11 +63,12 @@ var countyNames = [
 
 countyNames = _.shuffle(countyNames);
 
-function County(name, population, converts, skepticism, income) {
+function County(name, population, converts, income, hostility, fervor) {
   this.name = name;
   this.population = population;
   this.converts = converts;
-  this.skepticism = skepticism;
+  this.hostility = hostility;
+  this.fervor = fervor;
   this.income = income;
   this.incomeStr = toMoneyFormat(income);
 
@@ -77,7 +78,26 @@ function County(name, population, converts, skepticism, income) {
     }
   });
 
+  Object.defineProperty(this, "convertsStr", {
+    get: function() {
+      return toPopulationFormat(this.converts);
+    }
+  });
+
+  Object.defineProperty(this, "hostilityStr", {
+    get: function() {
+      return toFuzzyFormat(this.hostility);
+    }
+  });
+
+  Object.defineProperty(this, "fervorStr", {
+    get: function() {
+      return toFuzzyFormat(this.fervor);
+    }
+  });
+
   this.cells = [];
+  this.neighbors = [];
 
   this.bishop = undefined;
   this.church = undefined;
@@ -91,6 +111,13 @@ function County(name, population, converts, skepticism, income) {
   this.setHighlight = function(h) {
     for(var i = 0; i < this.cells.length; ++i) {
       this.cells[i].setHighlight(h);
+    }
+  }
+
+  this.setNeighbors = function() {
+    for(var i = 0; i < this.cells.length; ++i) {
+      var neighbors = _.pluck(this.cells[i].neighbors(), 'county');
+      this.neighbors = _.union(neighbors, this.neighbors);
     }
   }
 }

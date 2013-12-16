@@ -3,6 +3,8 @@ function Cell() {
   this.county = undefined;
   this.entity = undefined;
   this.borderName = '';
+  this.map = undefined;
+  this.index = undefined;
 
   this.setHighlight = function(h) {
     if(!this.entity)
@@ -15,6 +17,10 @@ function Cell() {
       this.entity.addComponent('groundBorder' + this.borderName);
     }
   };
+
+  this.neighbors = function() {
+    return this.map.neighbors(this.index);
+  }
 }
 
 function Map(width, height) {
@@ -24,6 +30,8 @@ function Map(width, height) {
 
   for(var i = 0; i < this.data.length; ++i) {
     this.data[i] = new Cell();
+    this.data[i].map = this;
+    this.data[i].index = i;
   }
 
   this.cell = function() {
