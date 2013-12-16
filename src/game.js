@@ -7,7 +7,7 @@ var mapOptions = {
 };
 
 var canvasWidth = 912;
-var canvasHeight = 512; // 344 is 100% height
+var canvasHeight = 544; // 344 is 100% height
 var mapHeight = mapOptions.height * mapOptions.tileHeight / 4 + (mapOptions.tileHeight / 4 * 3);
 
 var HUDButtons;
@@ -17,6 +17,8 @@ var tooltipData;
 
 var bishopPopover;
 var bishopPopoverTemplate;
+
+var errorTemplate;
 
 var game = {
   map: undefined,
@@ -150,6 +152,10 @@ $(document).ready(function() {
     $('#end-turn').on('click', endTurn);
   });
 
+  $.get('html/error.html', function(data) {
+    errorTemplate = doT.template(data);
+  });
+
   loadDialog('county');
   loadDialog('bishop');
 
@@ -161,10 +167,54 @@ $(document).ready(function() {
   var startingCounty = countiesByLucrativeness[randRange(0, 4)];
   addChurch(startingCounty);
   startingCounty.bishop = generateBishop();
+  startingCounty.bishop.charisma = randRange(60, 71);
   startingCounty.converts = randRange(90, 110);
 
   updateGlobalStateUI();
 });
+
+function updateGlobalStateUI() {
+  $('#week-num').html(game.month);
+  $('#num-followers').html(game.totalFollowers());
+  $('#treasury').html(toMoneyFormat(game.money));
+}
+
+function signalError(error) {
+  $('#error').html(errorTemplate({error: error}));
+}
+
+function toMoneyFormat(amount) {
+  var DecimalSeparator = Number("1.2").toLocaleString().substr(1,1);
+
+  var AmountWithCommas = amount.toLocaleString();
+  var arParts = String(AmountWithCommas).split(DecimalSeparator);
+  var intPart = arParts[0];
+  var decPart = (arParts.length > 1 ? arParts[1] : '');
+  decPart = (decPart + '00').substr(0,2);
+
+  return '$' + intPart + DecimalSeparator + decPart;
+}
+
+function toPopulationFormat(amount) {
+  return amount.toLocaleString();
+}
+
+function toFuzzyFormat(amount) {
+  if(amount <= 0) {
+    return 'None';
+  }
+  if(amount < 20) {
+    return 'Very Low (' + amount + ')';
+  } else if(amount < 40) {
+    return 'Low (' + amount + ')';
+  } else if(amount < 60) {
+    return 'Moderate (' + amount + ')';
+  } else if(amount < 80) {
+    return 'High (' + amount + ')';
+  } else {
+    return 'Very High (' + amount + ')';
+  }
+}
 
 function endTurn() {
   game.counties.forEach(updateFervor);
@@ -198,42 +248,15 @@ function updateHostility(county) {
   county.hostility = clamp(county.hostility);
 }
 
-function updateGlobalStateUI() {
-  $('#week-num').html(game.month);
-  $('#num-followers').html(game.totalFollowers());
-  $('#treasury').html(toMoneyFormat(game.money));
-}
-
-function toMoneyFormat(amount) {
-  var DecimalSeparator = Number("1.2").toLocaleString().substr(1,1);
-
-  var AmountWithCommas = amount.toLocaleString();
-  var arParts = String(AmountWithCommas).split(DecimalSeparator);
-  var intPart = arParts[0];
-  var decPart = (arParts.length > 1 ? arParts[1] : '');
-  decPart = (decPart + '00').substr(0,2);
-
-  return '$' + intPart + DecimalSeparator + decPart;
-}
-
-function toPopulationFormat(amount) {
-  return amount.toLocaleString();
-}
-
-function toFuzzyFormat(amount) {
-  if(amount <= 0) {
-    return 'None';
-  }
-  if(amount < 20) {
-    return 'Very Low (' + amount + ')';
-  } else if(amount < 40) {
-    return 'Low (' + amount + ')';
-  } else if(amount < 60) {
-    return 'Moderate (' + amount + ')';
-  } else if(amount < 80) {
-    return 'High (' + amount + ')';
+function expandChurch(county) {
+  var churchMoney = 20000
+  if(game.money < churchMoney) {
+    signalError('Not enough money! You need ' + toMoneyFormat(churchMoney));
   } else {
-    return 'Very High (' + amount + ')';
+    game.money -= churchMoney;
+    county.church.level += 1;
+    updateGlobalStateUI();
+    openDialog('county', county);
   }
 }
 
@@ -281,7 +304,7 @@ function generateCounties() {
 
   game.counties.forEach(function(county) {
     var low = 2500 * county.cells.length;
-    var high = 145000 * county.cells.length;
+    var high = 15000 * county.cells.length;
     county.population = randRange(low, high);
     county.converts = 0;
 
@@ -438,6 +461,10 @@ function generateMap() {
                   $(this).val(pay);
                   county.bishopPay = pay;
                 });
+
+                $('#expand-church').on('click', function() {
+                  expandChurch(county);
+                })
               }
             })
             .bind('MouseOver', function(e) {

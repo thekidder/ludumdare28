@@ -26,8 +26,16 @@
           <div class="col-sm-4">
             <div class="bishop-container">
               <div class="text-center bishop-img">
+                {{? it.church.level == 1 }}
                 <img src="assets/church-small.jpg" /><br/>
                 Small Church
+                {{?? it.church.level == 2 }}
+                <img src="assets/church-small.jpg" /><br/>
+                Medium Church
+                {{?? true }}
+                <img src="assets/church-small.jpg" /><br/>
+                Mega Church
+                {{?}}
               </div>
             </div>
             <div class="bishop-container" id="bishop-{{=it.bishop.name}}">
@@ -45,12 +53,15 @@
             </div>
           </div>
           <div class="col-sm-8">
+          <div id="error"></div>
           <p>{{=it.blurb}}</p>
           <div class="text-center">
-            <button type="button" class="btn btn-default btn-sm">
+            {{? it.church.level < 3 }}
+            <button id="expand-church" type="button" class="btn btn-default btn-sm">
               <span class="glyphicon glyphicon-plus"></span><br/>
               Expand Church
             </button>
+            {{?}}
             <button type="button" class="btn btn-default btn-sm">
               <span class="glyphicon glyphicon-book"></span><br/>
               Spread Pamphlets
@@ -80,6 +91,7 @@
         </div>
         {{?? true}}
         <div class="col-sm-12">
+          <div id="error"></div>
           <p>{{=it.blurb}}</p>
           <button type="button" class="btn btn-default btn-lg">
             <span class="glyphicon glyphicon-open"></span><br/>

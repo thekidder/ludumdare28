@@ -5,7 +5,7 @@ var dialogCloseEvent = undefined;
 function isDialogOpen() {
   for(var i = 0; i < dialogs.length; ++i) {
     if(dialogs[i].entity.visible)
-      return true;
+      return dialogs[i];
   }
   return false;
 }
@@ -21,9 +21,12 @@ function closeDialog(e) {
 }
 
 function openDialog(name, templateData) {
-  if(isDialogOpen()) {
+  var cur = isDialogOpen();
+  if(cur && cur.name != name) {
     console.log('in dialog');
     return;
+  } else if(cur.name == name) {
+    cur.entity.replace(cur.template(templateData));
   }
 
   for(var i = 0; i < dialogs.length; ++i) {
