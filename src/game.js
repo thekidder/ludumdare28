@@ -428,11 +428,17 @@ function spreadPamphlets(county) {
   if(game.money < cost) {
     signalError('Not enough money! You need ' + toMoneyFormat(cost));
   } else {
+    var amt = randRange(2, 8);
     game.money -= cost;
-    county.hostility -= randRange(2, 8);
+    county.hostility -= amt
 
     updateGlobalStateUI();
     openDialog('county', county);
+
+    openDialog('info', {
+      title: 'Spread Pamphlets',
+      text: 'You print up gobs of pamphlets and hand them out. It takes hours. You\'re not sure how effective it was, but people seem slightly less hateful (maybe?)'
+    });
   }
 }
 
