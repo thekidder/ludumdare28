@@ -87,9 +87,16 @@ function County(name, population, converts, income, hostility, fervor) {
       if(!this.church) {
         return 0;
       }
+
+      if(this.bishop) {
+        var bishopFervor = this.bishop.fervor;
+      } else {
+        var bishopFervor = 0;
+      }
+
       var w = this.church.bishopFervorWeight();
       var bishopPart = 0.7;
-      var result = 10 * Math.pow(bishopPart * this.bishop.fervor + (1 - bishopPart) * 100 * this.converts/this.population, 1/w)
+      var result = 10 * Math.pow(bishopPart * bishopFervor + (1 - bishopPart) * 100 * this.converts/this.population, 1/w)
         + this.internalFervorShock;
       return clamp(result);
     }

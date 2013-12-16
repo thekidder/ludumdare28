@@ -21,4 +21,14 @@ function Church() {
       return 1/10;
     }
   }
+
+  this.upkeep = function() {
+    if(this.level == 1) {
+      return 2500;
+    } else if(this.level == 2) {
+      return 5000;
+    } else {
+      return 10000;
+    }
+  }
 }

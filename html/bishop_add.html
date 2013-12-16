@@ -1,28 +1,20 @@
-<div class="modal fade in visible" id="bishop-dialog">
+<div class="modal fade in visible" id="bishop-add-dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <a id="county-window-close" class="close" aria-hidden="true">&times;</a>
-        <h4 class="modal-title">Bishop Seminary</h4>
+        <h4 class="modal-title">Assign Bishop</h4>
       </div>
       <div class="modal-body clearfix">
         <div class="text-center">
           {{~ it.bishops :v }}
-          <div id="bishop-{{=v.name}}" class="bishop-container">
+          <button type="button" id="bishop-{{=v.name}}" class="bishop-container btn btn-default">
             <div class="text-center bishop-img">
               <img src="assets/bishop.jpg" /><br/>
               {{=v.name}}
             </div>
-          </div>
+          </button>
           {{~}}
-          {{? it.bishops.length < 3 }}
-          <div class="bishop-container">
-            <button class="btn btn-default btn-add-bishop">
-              <span class="glyphicon glyphicon-plus"></span><br/>
-              Recruit Bishop
-            </button> 
-            {{?}}
-          </div>
         </div>
       </div>
     </div>

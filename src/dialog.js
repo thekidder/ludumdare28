@@ -1,6 +1,6 @@
 var dialogs = Array();
-
 var dialogCloseEvent = undefined;
+var dialogNumOpen = 0;
 
 function isDialogOpen() {
   for(var i = 0; i < dialogs.length; ++i) {
@@ -10,21 +10,19 @@ function isDialogOpen() {
   return false;
 }
 
-function closeDialog(e) {
+function closeDialog(e, d) {
   console.log('closed');
-  //$('.modal').removeClass('visible');
-  for(var i = 0; i < dialogs.length; ++i) {
-    dialogs[i].entity.attr({visible: false});
-    //dialogs[i].entity.removeComponent('Mouse');
-  }
+  
+  d.entity.attr({visible: false});
   dialogCloseEvent = e;
+
+  dialogNumOpen--;
 }
 
 function openDialog(name, templateData) {
   var cur = isDialogOpen();
   if(cur && cur.name != name) {
     console.log('in dialog');
-    return;
   } else if(cur.name == name) {
     cur.entity.replace(cur.template(templateData));
   }
@@ -33,15 +31,20 @@ function openDialog(name, templateData) {
     if(dialogs[i].name == name) {
       dialogs[i].entity.replace(dialogs[i].template(templateData));
       //dialogs[i].entity.addComponent('Mouse');
-      dialogs[i].entity.attr({visible: true});
+      dialogs[i].entity.attr({visible: true, z: 10000 + dialogNumOpen});
       //$('#' + name + '-dialog').addClass('visible');
-      $('.close').on('click', function(e) { closeDialog(e);});
+      $('.close').on('click', function(e) { closeDialog(e, dialogs[i]);});
+      dialogs[i].close = function(e) { var ind = i; closeDialog(e, dialogs[ind]);};
+
+      dialogs[i].configFn(templateData, dialogs[i]);
+
+      dialogNumOpen++;
       break;
     }
   }
 }
 
-function loadDialog(name) {
+function loadDialog(name, configFn) {
   $.get('html/' + name + '.html', function(data) {
     var template = doT.template(data);
     var entity = Crafty.e('2D, DOM, HTML, Mouse').attr({x: 0, y: -Crafty.viewport.y, z: 10000, w: canvasWidth, h: canvasHeight});
@@ -49,7 +52,8 @@ function loadDialog(name) {
     obj = {
       name: name,
       entity: entity,
-      template: template
+      template: template,
+      configFn: configFn
     };
     dialogs.push(obj);
   });

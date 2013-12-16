@@ -38,19 +38,21 @@
                 {{?}}
               </div>
             </div>
+            {{? it.bishop}}
             <div class="bishop-container" id="bishop-{{=it.bishop.name}}">
-              {{? it.bishop}}
               <div class="text-center bishop-img">
                 <img src="assets/bishop.jpg" /><br/>
                 {{=it.bishop.name}}
               </div>
-              {{?? true }}
-              <button class="btn btn-default btn-add-bishop">
+            </div>
+            {{?? true }}
+            <div class="bishop-container">
+              <button id="add-bishop" class="btn btn-default btn-add-bishop">
                 <span class="glyphicon glyphicon-plus"></span><br/>
                 Add Bishop
               </button> 
-              {{?}}
             </div>
+            {{?}}
           </div>
           <div class="col-sm-8">
           <div id="error"></div>
@@ -62,11 +64,11 @@
               Expand Church
             </button>
             {{?}}
-            <button type="button" class="btn btn-default btn-sm">
+            <button id="spread-pamphlets" type="button" class="btn btn-default btn-sm">
               <span class="glyphicon glyphicon-book"></span><br/>
               Spread Pamphlets
             </button>
-            <button type="button" class="btn btn-default btn-sm">
+            <button id="remove-bishop" type="button" class="btn btn-default btn-sm">
               <span class="glyphicon glyphicon-minus"></span><br/>
               Remove Bishop
             </button>
@@ -93,9 +95,13 @@
         <div class="col-sm-12">
           <div id="error"></div>
           <p>{{=it.blurb}}</p>
-          <button type="button" class="btn btn-default btn-lg">
+          <button id="build-church" type="button" class="btn btn-default btn-lg">
             <span class="glyphicon glyphicon-open"></span><br/>
             <span>Build a Church</span>
+          </button>
+          <button id="spread-pamphlets" type="button" class="btn btn-default btn-lg">
+            <span class="glyphicon glyphicon-book"></span><br/>
+            Spread Pamphlets
           </button>
         </div>
         {{?}}
