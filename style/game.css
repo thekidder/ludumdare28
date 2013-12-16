@@ -19,7 +19,7 @@
   height: 80px;
   margin-bottom: 4px;
   white-space: normal;
-}
+} 
 
 .form-horizontal .form-group {
   margin-top: 10px;
@@ -103,6 +103,11 @@
 
 .dl-horizontal dt {
   text-align: left;
+  width: 140px;
+}
+
+.dl-horizontal dd {
+  margin-left: 160px;
 }
 
 .dl-compact dt {

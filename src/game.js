@@ -31,7 +31,8 @@ var game = {
     return r;
   },
 
-  week: 1
+  week: 1,
+  money: 20000
 };
   
 function randRange(low, high) {
@@ -136,7 +137,9 @@ $(document).ready(function() {
 
   game.bishops = [{name: 'A'}, {name: 'B'}];
 
-  addChurch(game.counties[randRange(0, game.counties.length)]);
+  var startingCounty = game.counties[randRange(0, game.counties.length)];
+  addChurch(startingCounty);
+  startingCounty.bishop = generateBishop();
 
   updateGlobalStateUI();
 });
@@ -144,6 +147,19 @@ $(document).ready(function() {
 function updateGlobalStateUI() {
   $('#week-num').html(game.week);
   $('#num-followers').html(game.totalFollowers());
+  $('#treasury').html(toMoneyFormat(game.money));
+}
+
+function toMoneyFormat(amount) {
+  var DecimalSeparator = Number("1.2").toLocaleString().substr(1,1);
+
+  var AmountWithCommas = amount.toLocaleString();
+  var arParts = String(AmountWithCommas).split(DecimalSeparator);
+  var intPart = arParts[0];
+  var decPart = (arParts.length > 1 ? arParts[1] : '');
+  decPart = (decPart + '00').substr(0,2);
+
+  return '$' + intPart + DecimalSeparator + decPart;
 }
 
 function addChurch(county) {
@@ -153,6 +169,14 @@ function addChurch(county) {
   var y = cell.entity._y - 22;
   var z = cell.entity._z + 3000;
   county.church.entity = Crafty.e('2D, DOM, churchSmall').attr({x:x, y:y, z:z});
+}
+
+function generateBishop() {
+  return new Bishop(
+    randRange(0, 101),
+    randRange(0, 101),
+    randRange(0, 101),
+    randRange(0, 101));
 }
 
 function generateCounties() {
@@ -176,8 +200,8 @@ function generateCounties() {
   }
 
   for(var i = 0; i < mapOptions.numCounties; ++i) {
-    var low = 5000 * game.counties[i].cells.length;
-    var high = 10000 * game.counties[i].cells.length;
+    var low = 2500 * game.counties[i].cells.length;
+    var high = 15000 * game.counties[i].cells.length;
     game.counties[i].population = randRange(low, high);
     game.counties[i].converts = 0;
   }
