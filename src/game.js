@@ -330,6 +330,8 @@ function toFuzzyFormat(amount) {
 }
 
 function endTurn() {
+  var lastMoney = game.money;
+
   game.counties.forEach(updateFervor);
   game.counties.forEach(updateConverts);
   game.counties.forEach(updateHostility);
@@ -349,7 +351,7 @@ function endTurn() {
   var events = [];
 
   if(events.length == 0) {
-    events = [defaultEvent];
+    events = getDefaultEvents(game.money, lastMoney)
   }
 
   openDialog('end_turn', {title: 'Month ' + game.month, events: events});
