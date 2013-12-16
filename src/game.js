@@ -18,7 +18,21 @@ var tooltipData;
 var bishopPopover;
 var bishopPopoverTemplate;
 
-var bishops;
+var game = {
+  map: undefined,
+  counties: [],
+  bishops: [],
+
+  totalFollowers: function() {
+    var r = 0;
+    for(var i = 0; i < this.counties.length; ++i) {
+      r += this.counties[i].converts;
+    }
+    return r;
+  },
+
+  week: 1
+};
   
 function randRange(low, high) {
   return Math.floor(Math.random() * (high - low)) + low;
@@ -90,8 +104,12 @@ $(document).ready(function() {
     groundHighlightBorderEastWest: [3,3,1,1],
   });
 
+  Crafty.sprite(32, "assets/church.png", {
+    churchSmall: [0, 0, 1, 1]
+  });
 
   generateMap();
+  generateCounties();
 
   //Crafty.viewport.y = -(mapHeight - canvasHeight) / 4;
 
@@ -116,8 +134,54 @@ $(document).ready(function() {
 
   $('#manage-bishops').tooltip({delay: { show: 1000}});
 
-  bishops = [{name: 'A'}, {name: 'B'}];
+  game.bishops = [{name: 'A'}, {name: 'B'}];
+
+  addChurch(game.counties[randRange(0, game.counties.length)]);
+
+  updateGlobalStateUI();
 });
+
+function updateGlobalStateUI() {
+  $('#week-num').html(game.week);
+  $('#num-followers').html(game.totalFollowers());
+}
+
+function addChurch(county) {
+  county.church = new Church();
+  var cell = county.cells[randRange(0, county.cells.length)];
+  var x = cell.entity._x;
+  var y = cell.entity._y - 22;
+  var z = cell.entity._z + 3000;
+  county.church.entity = Crafty.e('2D, DOM, churchSmall').attr({x:x, y:y, z:z});
+}
+
+function generateCounties() {
+  var skepticisms = ['Very low', 'Low', 'Moderate', 'High', 'Very high'];
+
+  game.counties = Array(mapOptions.numCounties);
+  for(var i = 0; i < mapOptions.numCounties; ++i) {
+    game.counties[i] = new County(
+      countyNames[randRange(0, countyNames.length)],
+      0,
+      0,
+      skepticisms[randRange(0, skepticisms.length)],
+      Math.round(Math.random() * 45000 + 30000));
+  }
+
+  for(var i = 0; i < game.map.data.length; ++i) {
+    var cell = game.map.cell(i);
+    if(cell.land) {
+      game.counties[cell.county - 1].cells.push(cell);
+    }
+  }
+
+  for(var i = 0; i < mapOptions.numCounties; ++i) {
+    var low = 5000 * game.counties[i].cells.length;
+    var high = 10000 * game.counties[i].cells.length;
+    game.counties[i].population = randRange(low, high);
+    game.counties[i].converts = 0;
+  }
+}
 
 function generateMap() {
   var scale = 3.778624246;
@@ -126,7 +190,7 @@ function generateMap() {
 
   var center = new Crafty.math.Vector2D(0.5, 0.5);
 
-  var map = new Map(mapOptions.width, mapOptions.height);
+  game.map = new Map(mapOptions.width, mapOptions.height);
 
   for(var i = 0; i < mapOptions.width; ++i) {
     for(var j = 0; j < mapOptions.height; ++j) {
@@ -135,15 +199,15 @@ function generateMap() {
       height -= 0.5;
 
       if(noise.perlin2(i / scale + xOffset, j / scale + yOffset) + height > 0.1) {
-         map.cell(i, j).land = false;
+        game.map.cell(i, j).land = false;
       } else {
-        map.cell(i, j).land = true;
+        game.map.cell(i, j).land = true;
       }
     }
   }
 
   var landIndices = Array();
-  for(var i = 0; i < map.data.length; ++i) {
+  for(var i = 0; i < game.map.data.length; ++i) {
     landIndices.push(i);
   }
 
@@ -151,8 +215,8 @@ function generateMap() {
 
   var countiesAssigned = 0;
   for(var i = 0; countiesAssigned < mapOptions.numCounties; ++i) {
-    if(map.cell(landIndices[i]).land) {
-      map.cell(landIndices[i]).county = countiesAssigned + 1;
+    if(game.map.cell(landIndices[i]).land) {
+      game.map.cell(landIndices[i]).county = countiesAssigned + 1;
       ++countiesAssigned;
     }
   }
@@ -160,66 +224,46 @@ function generateMap() {
   var haveUnassignedCounties = true;
   while(haveUnassignedCounties) {
     haveUnassignedCounties = false;
-    for(var i = 0; i < map.data.length; ++i) {
-      var cell = map.cell(landIndices[i]);
+    for(var i = 0; i < game.map.data.length; ++i) {
+      var cell = game.map.cell(landIndices[i]);
       if(!cell.county) {
         haveUnassignedCounties = true;
 
-        var neighbors = map.neighbors(landIndices[i]);
+        var neighbors = game.map.neighbors(landIndices[i]);
 
-        var counties = _.compact(_.pluck(neighbors, 'county'));
+        var neighboringCounties = _.compact(_.pluck(neighbors, 'county'));
 
-        if(counties.length == 0)
+        if(neighboringCounties.length == 0)
           continue;
 
-        cell.county = counties[Math.floor(Math.random() * counties.length)];
+        cell.county = neighboringCounties[randRange(0, neighboringCounties.length)];
       }
-    }
-  }
-
-  var skepticisms = ['Very low', 'Low', 'Moderate', 'High', 'Very high'];
-
-  var counties = Array(mapOptions.numCounties);
-  for(var i = 0; i < mapOptions.numCounties; ++i) {
-    var pop = Math.round(Math.random() * 95000 + 5000);
-    counties[i] = new County(
-      countyNames[randRange(0, countyNames.length)],
-      pop,
-      Math.round(Math.random() * pop),
-      skepticisms[randRange(0, skepticisms.length)],
-      Math.round(Math.random() * 45000 + 30000));
-  }
-
-  for(var i = 0; i < map.data.length; ++i) {
-    var cell = map.cell(i);
-    if(cell.land) {
-      counties[cell.county - 1].cells.push(cell);
     }
   }
   
   var iso = Crafty.isometric.size(32);
   for(var i = mapOptions.width - 1; i >= 0; --i) {
     for(var j = 0; j < mapOptions.height; ++j) {
-      if(map.cell(i, j).land) {
+      if(game.map.cell(i, j).land) {
         var create = function() {
           var x = i; //closures
           var y = j;
 
           var borderName = '';
 
-          if(!map.northNeighbor(i, j) || !map.northNeighbor(i, j).land || map.northNeighbor(i,j).county != map.cell(i,j).county)
+          if(!game.map.northNeighbor(i, j) || !game.map.northNeighbor(i, j).land || game.map.northNeighbor(i,j).county != game.map.cell(i,j).county)
             borderName += 'North';
 
-          if(!map.eastNeighbor(i, j) || !map.eastNeighbor(i, j).land || map.eastNeighbor(i,j).county != map.cell(i,j).county)
+          if(!game.map.eastNeighbor(i, j) || !game.map.eastNeighbor(i, j).land || game.map.eastNeighbor(i,j).county != game.map.cell(i,j).county)
             borderName += 'East';
 
-          if(!map.southNeighbor(i, j) || !map.southNeighbor(i, j).land || map.southNeighbor(i,j).county != map.cell(i,j).county)
+          if(!game.map.southNeighbor(i, j) || !game.map.southNeighbor(i, j).land || game.map.southNeighbor(i,j).county != game.map.cell(i,j).county)
             borderName += 'South';
 
-          if(!map.westNeighbor(i, j) || !map.westNeighbor(i, j).land || map.westNeighbor(i,j).county != map.cell(i,j).county)
+          if(!game.map.westNeighbor(i, j) || !game.map.westNeighbor(i, j).land || game.map.westNeighbor(i,j).county != game.map.cell(i,j).county)
             borderName += 'West';
 
-          map.cell(i,j).borderName = borderName;
+          game.map.cell(i,j).borderName = borderName;
 
           var e = Crafty.e('2D, DOM, groundBorder' + borderName + ', Mouse')
             .attr('z', i+1 * j+1)
@@ -229,10 +273,10 @@ function generateMap() {
                 console.log('HACK HACK HACK');
                 return; // HACK HACK HACK HACK
               }
-              console.log(x + ', ' + y + ': ' + map.cell(x, y).county);
+              console.log(x + ', ' + y + ': ' + game.map.cell(x, y).county);
 
-              var county = map.cell(x,y).county;
-              openDialog('county', counties[county - 1]);
+              var county = game.map.cell(x,y).county;
+              openDialog('county', game.counties[county - 1]);
               var bishop = {name: 'A'};
               $('#bishop-' + bishop.name).on('mouseenter', function(e) {
                 bishopPopover.replace(bishopPopoverTemplate(bishop));
@@ -248,10 +292,10 @@ function generateMap() {
               });
             })
             .bind('MouseOver', function(e) {
-              var county = map.cell(x,y).county;
-              counties[county - 1].setHighlight(true);
+              var county = game.map.cell(x,y).county;
+              game.counties[county - 1].setHighlight(true);
 
-              var html = tooltipData(counties[county - 1]);
+              var html = tooltipData(game.counties[county - 1]);
               tooltip.replace(html);
 
               $('#county-popover').removeClass('hidden');
@@ -271,13 +315,13 @@ function generateMap() {
               tooltip.attr({x: tooltipX, y: tooltipY});
             })
             .bind('MouseOut', function() {
-              var county = map.cell(x,y).county;
-              counties[county - 1].setHighlight(false);
+              var county = game.map.cell(x,y).county;
+              game.counties[county - 1].setHighlight(false);
 
               $('#county-popover').addClass('hidden');
               $('#county-popover').removeClass('visible');
             });
-          map.cell(i, j).entity = e;
+          game.map.cell(i, j).entity = e;
           iso.place(i, j, 0, e);
         }
         create();

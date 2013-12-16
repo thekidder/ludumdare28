@@ -3,7 +3,7 @@
   margin-bottom: 0px;
 }
 
-.navbar-top h6 span {
+.navbar-top > h6 > span {
   padding-right: 0.75em;
   padding-left: 0.75em;
   border-left: 1px solid #333;
