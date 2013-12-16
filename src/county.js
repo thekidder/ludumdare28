@@ -112,7 +112,7 @@ function County(name, population, converts, income, hostility, fervor) {
         growth += this.church.bishopCharismaRate() * this.bishop.charisma;
       }
 
-      growth -= this.fervorTitheModifier() * Math.pow(this.tithe, 2) / 5;
+      growth -= (this.fervorTitheModifier() * Math.pow(this.tithe, 2)) / 5;
       growth -= 0.05 * this.hostility;
 
       return growth * 0.01;
