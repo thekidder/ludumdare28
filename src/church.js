@@ -24,11 +24,11 @@ function Church() {
 
   this.upkeep = function() {
     if(this.level == 1) {
-      return 10000;
+      return 5000;
     } else if(this.level == 2) {
-      return 30000;
+      return 15000;
     } else {
-      return 50000;
+      return 30000;
     }
   }
 
