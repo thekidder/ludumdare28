@@ -367,6 +367,28 @@ function generateMap() {
               $('#bishop-' + bishop.name).on('mouseleave', function(e) {
                 bishopPopover.visible = false;
               });
+
+              $('#tithe').on('change', function(e) {
+                var tithe = parseInt($(this).val());
+                if(isNaN(tithe)) {
+                  tithe = 0;
+                } else {
+                  tithe = clamp(tithe);
+                }
+                $(this).val(tithe);
+                county.tithe = tithe;
+              });
+
+              $('#bishop-pay').on('change', function(e) {
+                var pay = parseInt($(this).val());
+                if(isNaN(pay)) {
+                  pay = 0;
+                } else {
+                  pay = clamp(pay, 0, 10000);
+                }
+                $(this).val(pay);
+                county.bishopPay = pay;
+              });
             })
             .bind('MouseOver', function(e) {
               var county = game.map.cell(x,y).county;

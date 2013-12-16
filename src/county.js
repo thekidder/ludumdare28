@@ -72,6 +72,7 @@ function County(name, population, converts, income, hostility, fervor) {
   this.income = income;
   this.incomeStr = toMoneyFormat(income);
   this.tithe = 0;
+  this.bishopPay = 0;
 
   Object.defineProperty(this, 'internalFervor', {
     get: function() {
