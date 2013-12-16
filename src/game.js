@@ -7,7 +7,7 @@ var mapOptions = {
 };
 
 var canvasWidth = 912;
-var canvasHeight = 500; // 344 is 100% height
+var canvasHeight = 512; // 344 is 100% height
 var mapHeight = mapOptions.height * mapOptions.tileHeight / 4 + (mapOptions.tileHeight / 4 * 3);
 
 var HUDButtons;
@@ -31,13 +31,9 @@ var game = {
     return r;
   },
 
-  week: 1,
+  month: 1,
   money: 20000
 };
-  
-function randRange(low, high) {
-  return Math.floor(Math.random() * (high - low)) + low;
-}
 
 function openBishopDialog() {
   openDialog('bishop', {bishops: game.bishops});
@@ -128,6 +124,8 @@ $(document).ready(function() {
     HUDButtons = Crafty.e('2D, DOM, HTML').attr({x: canvasWidth - 168, y: -Crafty.viewport.y + canvasHeight - 84, z: 9999, w: 180})
       .replace(data);
     $('#manage-bishops').on('click', openBishopDialog);
+
+    $('#end-turn').on('click', endTurn);
   });
 
   loadDialog('county');
@@ -141,12 +139,26 @@ $(document).ready(function() {
   var startingCounty = countiesByLucrativeness[randRange(0, 4)];
   addChurch(startingCounty);
   startingCounty.bishop = generateBishop();
+  startingCounty.converts = randRange(90, 110);
 
   updateGlobalStateUI();
 });
 
+function endTurn() {
+  game.counties.forEach(updateFervor);
+  //forEach(game.counties, updateGrowthRate);
+
+  ++game.month;
+  updateGlobalStateUI();
+}
+
+function updateFervor(county) {
+  amt = Math.min(Math.abs(county.internalFervorShock), 2);
+  county.internalFervorShock -= sign(county.internalFervorShock) * amt;
+}
+
 function updateGlobalStateUI() {
-  $('#week-num').html(game.week);
+  $('#week-num').html(game.month);
   $('#num-followers').html(game.totalFollowers());
   $('#treasury').html(toMoneyFormat(game.money));
 }
@@ -168,16 +180,19 @@ function toPopulationFormat(amount) {
 }
 
 function toFuzzyFormat(amount) {
+  if(amount <= 0) {
+    return 'None';
+  }
   if(amount < 20) {
-    return 'Very Low';
+    return 'Very Low (' + amount + ')';
   } else if(amount < 40) {
-    return 'Low';
+    return 'Low (' + amount + ')';
   } else if(amount < 60) {
-    return 'Moderate';
+    return 'Moderate (' + amount + ')';
   } else if(amount < 80) {
-    return 'High';
+    return 'High (' + amount + ')';
   } else {
-    return 'Very High';
+    return 'Very High (' + amount + ')';
   }
 }
 
@@ -204,28 +219,32 @@ function generateCounties() {
   for(var i = 0; i < mapOptions.numCounties; ++i) {
     game.counties[i] = new County(
       countyNames[i],
-      0,
-      0,
-      Math.round(Math.random() * 45000 + 30000),
-      randRange(0, 101),
-      randRange(0, 101));
+      0, // pop
+      0, // converts
+      randRange(2500, 6000), // income
+      randRange(0, 101), // initial hostility
+      10); //initial fervor shock
   }
 
   for(var i = 0; i < game.map.data.length; ++i) {
     var cell = game.map.cell(i);
     if(cell.land) {
-      game.counties[cell.county - 1].cells.push(cell);
+      cell.county = game.counties[cell.county - 1];
+      cell.county.cells.push(cell);
+    } else {
+      cell.county = undefined;
     }
+    
   }
 
-  for(var i = 0; i < mapOptions.numCounties; ++i) {
-    var low = 2500 * game.counties[i].cells.length;
-    var high = 145000 * game.counties[i].cells.length;
-    game.counties[i].population = randRange(low, high);
-    game.counties[i].converts = 0;
+  game.counties.forEach(function(county) {
+    var low = 2500 * county.cells.length;
+    var high = 145000 * county.cells.length;
+    county.population = randRange(low, high);
+    county.converts = 0;
 
-    game.counties[i].setNeighbors(game.map);
-  }
+    county.setNeighbors(game.map);
+  });
 }
 
 function generateMap() {
@@ -322,7 +341,7 @@ function generateMap() {
 
               tooltip.visible = false;
               var county = game.map.cell(x,y).county;
-              openDialog('county', game.counties[county - 1]);
+              openDialog('county', county);
               var bishop = {name: 'A'};
               $('#bishop-' + bishop.name).on('mouseenter', function(e) {
                 bishopPopover.replace(bishopPopoverTemplate(bishop));
@@ -339,16 +358,16 @@ function generateMap() {
             })
             .bind('MouseOver', function(e) {
               var county = game.map.cell(x,y).county;
-              game.counties[county - 1].setHighlight(true);
+              county.setHighlight(true);
 
-              var html = tooltipData(game.counties[county - 1]);
+              var html = tooltipData(county);
               tooltip.replace(html);
               tooltip.visible = true;
 
             })
             .bind('MouseOut', function() {
               var county = game.map.cell(x,y).county;
-              game.counties[county - 1].setHighlight(false);
+              county.setHighlight(false);
 
               tooltip.visible = false;
             });

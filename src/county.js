@@ -68,9 +68,30 @@ function County(name, population, converts, income, hostility, fervor) {
   this.population = population;
   this.converts = converts;
   this.hostility = hostility;
-  this.fervor = fervor;
+  this.internalFervorShock = fervor;
   this.income = income;
   this.incomeStr = toMoneyFormat(income);
+
+  Object.defineProperty(this, 'internalFervor', {
+    get: function() {
+      if(!this.church) {
+        return 0;
+      }
+      var w = this.church.bishopFervorWeight();
+      var result = 10 * Math.pow(this.bishop.fervor, 1/w) + this.internalFervorShock;
+      return clamp(result);
+    }
+  });
+
+  Object.defineProperty(this, "fervor", {
+    get: function() {
+      var percentLocal = 0.7;
+      var neighborFervor = _.reduce(_.pluck(this.neighbors, 'internalFervor'), function(memo, f, i, l) {
+          return memo + f / l.length;
+      }, 0);
+      return percentLocal * this.internalFervor + (1 - percentLocal) * neighborFervor;
+    }
+  });
 
   Object.defineProperty(this, "populationStr", {
     get: function() {
@@ -92,7 +113,7 @@ function County(name, population, converts, income, hostility, fervor) {
 
   Object.defineProperty(this, "fervorStr", {
     get: function() {
-      return toFuzzyFormat(this.fervor);
+      return toFuzzyFormat(this.fervor.toPrecision(4));
     }
   });
 
@@ -116,7 +137,7 @@ function County(name, population, converts, income, hostility, fervor) {
 
   this.setNeighbors = function() {
     for(var i = 0; i < this.cells.length; ++i) {
-      var neighbors = _.pluck(this.cells[i].neighbors(), 'county');
+      var neighbors = _.compact(_.pluck(this.cells[i].neighbors(), 'county'));
       this.neighbors = _.union(neighbors, this.neighbors);
     }
   }

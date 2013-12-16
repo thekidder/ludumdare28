@@ -65,7 +65,7 @@ function Map(width, height) {
 
     if(args === undefined) { return undefined; }
 
-    results = new Array();
+    var results = new Array();
 
     var top = this.northNeighbor(args.x, args.y);
     var left = this.eastNeighbor(args.x, args.y);
