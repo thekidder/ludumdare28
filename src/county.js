@@ -104,6 +104,47 @@ function County(name, population, converts, income, hostility, fervor) {
     }
   });
 
+  Object.defineProperty(this, 'growth', {
+    get: function() {
+      var growth = 0;
+
+      if(this.church && this.bishop) {
+        growth += this.church.bishopCharismaRate() * this.bishop.charisma;
+      }
+
+      growth -= this.fervorTitheModifier() * this.tithe
+      growth -= 0.05 * this.hostility;
+
+      return growth;
+    }
+  });
+
+  Object.defineProperty(this, 'growthEstimate', {
+    get: function() {
+      var g = this.growth;
+      if(g > 0) {
+        var s = '<span class="text-success">';
+        var sym = '+';
+      } else {
+        var s = '<span class="text-danger">';
+        var sym = '-';
+      }
+
+      g = Math.abs(Math.round(g / 0.04));
+
+      if(g == 0) {
+        return '<span class="text-warning">Stable</span>';
+      }
+
+      var t = '';
+      for(var i = 0; i < Math.min(12, g); ++i) {
+        t += sym;
+      }
+
+      return s + t + '</span>';
+    }
+  });
+
   Object.defineProperty(this, "fervor", {
     get: function() {
       var percentLocal = 0.7;

@@ -18,6 +18,7 @@
             <dl class="dl-horizontal dl-compact">
               <dt>Hostility</dt><dd>{{=it.hostilityStr}}</dd>
               <dt>Fervor</dt><dd>{{=it.fervorStr}}</dd>
+              <dt>Current Growth</dt><dd>{{=it.growthEstimate}}</dd>
             </dl>
           </div>
         </div>
@@ -30,7 +31,7 @@
                 <img src="assets/church_small.png" /><br/>
                 Small Church
                 {{?? it.church.level == 2 }}
-                <img src="assets/church_medium.png" /><br/>
+                <img src="assets/church_medium.png  " /><br/>
                 Medium Church
                 {{?? true }}
                 <img src="assets/church_large.png" /><br/>
