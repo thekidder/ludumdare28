@@ -40,6 +40,12 @@ function Church() {
     }
   }
 
+  Object.defineProperty(this, 'upgradeCostStr', {
+    get: function() {
+      return toMoneyFormat(this.upgradeCost());
+    }
+  });
+
   this.maxConverts = function() {
     if(this.level == 1) {
       return 1000;

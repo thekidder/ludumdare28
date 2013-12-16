@@ -153,6 +153,19 @@ function County(name, population, converts, income, hostility, fervor) {
     }
   });
 
+
+  Object.defineProperty(this, 'pamphletCost', {
+    get: function() {
+      return toMoneyFormat(game.pamphletCost);
+    }
+  });
+
+  Object.defineProperty(this, 'buildChurchCost', {
+    get: function() {
+      return toMoneyFormat(game.buildChurchCost);
+    }
+  });
+
   Object.defineProperty(this, "fervor", {
     get: function() {
       var percentLocal = 0.7;

@@ -31,11 +31,14 @@ var game = {
   month: 1,
   money: 20000,
   pendingBishops: {},
-  maxDebt: 10000
+  maxDebt: 10000,
+  pamphletCost: 2000,
+  buildChurchCost: 20000,
+  recruitBishopCost: 5000
 };
 
 function openBishopDialog() {
-  openDialog('bishop', {bishops: game.bishops});
+  openDialog('bishop', {bishops: game.bishops, recruitCost: toMoneyFormat(game.recruitBishopCost)});
 }
 
 function followMouse(element, canvasX, canvasY, width, height) {
@@ -429,7 +432,7 @@ function updateBishopDefections(county, events) {
 }
 
 function recruitBishop(bishops) {
-  var cost = 5000;
+  var cost = game.recruitBishopCost;
   if(game.money < cost) {
     signalError('Not enough money! You need ' + toMoneyFormat(cost));
   } else {
@@ -448,7 +451,7 @@ function recruitBishop(bishops) {
 }
 
 function spreadPamphlets(county) {
-  var cost = 2000;
+  var cost = game.pamphletCost;
   if(game.money < cost) {
     signalError('Not enough money! You need ' + toMoneyFormat(cost));
   } else {
@@ -469,7 +472,7 @@ function spreadPamphlets(county) {
 }
 
 function buildChurch(county) {
-  var cost = 20000;
+  var cost = game.buildChurchCost;
   if(game.money < cost) {
     signalError('Not enough money! You need ' + toMoneyFormat(cost));
   } else {
