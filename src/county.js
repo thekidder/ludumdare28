@@ -112,37 +112,36 @@ function County(name, population, converts, income, hostility, fervor) {
         growth += this.church.bishopCharismaRate() * this.bishop.charisma;
       }
 
-      growth -= this.fervorTitheModifier() * this.tithe
+      growth -= this.fervorTitheModifier() * this.tithe;
       growth -= 0.05 * this.hostility;
 
-      return growth;
+      return growth * 0.01;
     }
   });
 
   Object.defineProperty(this, 'growthEstimate', {
     get: function() {
       var g = this.growth;
-      console.log('growth is ' + g);
 
       if(!this.church || !this.bishop) {
         return '<span class="text-danger">None</span>';
       }
 
-      if(g < -0.25) {
+      if(g < -0.10) {
         return '<span class="small text-danger">Extremely Negative</span>';
-      } else if(g < -0.15) {
+      } else if(g < -0.05) {
         return '<span class="text-danger">Very Negative</span>';
-      } else if(g < -0.10) {
+      } else if(g < -0.03) {
         return '<span class="text-danger">Negative</span>';
       } else if(g < -0.01) {
-        return '<span class="text-danger">Slightly Negative</span>';
+        return '<span class="small text-danger">Slightly Negative</span>';
       } else if(g < 0.01) {
-        return '<span class="text-warning">Stable</span>';
-      } else if(g < 0.10) {
-        return '<span class="text-success">Slightly Positive</span>';
-      } else if(g < 0.15) {
+        return '<span class="text-warning">Stable</span>';p
+      } else if(g < 0.03) {
+        return '<span class="small text-success">Slightly Positive</span>';
+      } else if(g < 0.05) {
         return '<span class="text-success">Positive</span>';
-      } else if(g < 0.25) {
+      } else if(g < 0.10) {
         return '<span class="text-success">Very Positive</span>';
       } else {
         return '<span class="small text-success">Extremely Positive</span>';
@@ -157,6 +156,36 @@ function County(name, population, converts, income, hostility, fervor) {
           return memo + f / l.length;
       }, 0);
       return percentLocal * this.internalFervor + (1 - percentLocal) * neighborFervor;
+    }
+  });
+
+  Object.defineProperty(this, 'profit', {
+    get: function() {
+      var profit = 0;
+
+      if(this.church && this.bishop) {
+        profit += this.income * this.tithe / 100 * this.converts;
+      }
+
+      if(this.bishop) {
+        profit -= this.bishopPay;
+      }
+
+      if(this.church) {
+        if(this.bishop) {
+          var upkeepRatio = (200 - this.bishop.pennypinching) / 100;
+        } else {
+          var upkeepRatio = 2;
+        }
+        profit -= this.church.upkeep() * upkeepRatio;
+      }
+      return profit;
+    }
+  });
+
+  Object.defineProperty(this, 'profitStr', {
+    get: function() {
+      return toMoneyFormat(this.profit);
     }
   });
 
@@ -197,7 +226,7 @@ function County(name, population, converts, income, hostility, fervor) {
   }
 
   this.fervorTitheModifier = function() {
-    return Math.pow(2, -this.fervor/10);
+    return Math.pow(1.15, -this.fervor/10);
   }
 
   this.setHighlight = function(h) {

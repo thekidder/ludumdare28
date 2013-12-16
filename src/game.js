@@ -110,7 +110,7 @@ $(document).ready(function() {
   Crafty.viewport.y += 24;
 
   loadSnippet('tooltip', function(data) {
-    tooltip = Crafty.e('2D, DOM, HTML').attr({x: 4, y: -Crafty.viewport.y + canvasHeight - 160, z: 10000, visible: false});
+    tooltip = Crafty.e('2D, DOM, HTML').attr({x: 4, y: -Crafty.viewport.y + canvasHeight - 140, z: 10000, visible: false});
   });
 
   loadSnippet('bishop_popover', function(data) {
@@ -190,7 +190,7 @@ function countyDialogConfig(county) {
 
   if(county.church) {
     $('#tithe').on('change', function(e) {
-      var tithe = parseInt($(this).val());
+      var tithe = parseFloat($(this).val());
       if(isNaN(tithe)) {
         tithe = 0;
       } else {
@@ -239,10 +239,10 @@ function bishopAddDialogConfig(bishops, dialog) {
   for(var i = 0; i < bishops.bishops.length; ++i) {
     var fn = function() {
       var index = i;
-      console.log('set click on ' + index + ': ' + bishops.bishops[index].index);
       $('#bishop-' + bishops.bishops[index].index).on('click', function(e) {
         bishops.county.bishop = bishops.bishops[index];
         bishops.bishops.splice(index, 1);
+        bishopPopover.visible = false;
         dialog.close();
         openDialog('county', bishops.county);
       });
@@ -256,8 +256,6 @@ function bishopDialogMouseovers(bishops) {
   for(var i = 0; i < bishops.length; ++i) {
     var fn = function() {
       var index = i;
-
-      console.log('set mouseover on ' + index + ': ' + bishops[index].index);
 
       $('#bishop-' + bishops[index].index).on('mouseenter', function(e) {
         bishopPopover.replace(compileSnippet('bishop_popover', bishops[index]));
@@ -400,24 +398,7 @@ function updateHostility(county) {
 }
 
 function updateMoney(county) {
-  var profit = 0;
-
-  if(county.church && county.bishop) {
-    profit += county.income * county.tithe / 100 * county.converts;
-  }
-
-  if(county.bishop) {
-    profit -= county.bishopPay;
-  }
-
-  if(county.church) {
-    if(county.bishop) {
-      var upkeepRatio = (200 - county.bishop.pennypinching) / 100;
-    } else {
-      var upkeepRatio = 2;
-    }
-    profit -= county.church.upkeep() * upkeepRatio;
-  }
+  var profit = county.profit;
 
   game.money += profit;
 }

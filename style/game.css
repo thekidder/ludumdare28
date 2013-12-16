@@ -103,6 +103,8 @@
 
 .info-popover {
   background-color: rgba(255, 255, 255, 0.75);
+  max-width: 600px;
+  width: 600px;
 }
 
 .info-popover dl {
