@@ -240,7 +240,7 @@ specialEvents.push({
   },
 
   text: function(county) {
-    return 'The citizens of ' + county.name + ' are happy that they get the day off from work on Great Leader’s Day.<br/>Hostility decreases!';
+    return 'The citizens of ' + county.name + ' are happy that they get the day off from work on Great Leader\'s Day.<br/>Hostility decreases!';
   },
 
   effects: function(county) {
@@ -262,7 +262,7 @@ specialEvents.push({
   },
 
   text: function(county) {
-    return 'The Church of '+ county.name + ' bake sale was a hit! People loved the ' + this.dessert + ', but they didn’t care for the kool-aid.<br/>Hostility decreases!';
+    return 'The Church of '+ county.name + ' bake sale was a hit! People loved the ' + this.dessert + ', but they didn\'t care for the kool-aid.<br/>Hostility decreases!';
   },
 
   effects: function(county) {
@@ -317,7 +317,7 @@ specialEvents.push({
   },
 
   conditions: function(county) {
-    return county.bishop && county.church && Math.random() < baseChance;
+    return county.bishop && county.church && Math.random() < baseChance && game.money >= 15000;
   },
 
   title: function(county) {
@@ -325,7 +325,7 @@ specialEvents.push({
   },
 
   text: function(county) {
-    return 'Damn it. In an interview with a major news outlet, Our Great Leader sort of...kind of...called us a cult. Should we pay $15,000.00 to cover it up or hope people don’t notice?';
+    return 'Damn it. In an interview with a major news outlet, Our Great Leader sort of...kind of...called us a cult. Should we pay $15,000.00 to cover it up or hope people don\'t notice?';
   },
 
   affirmButton: function(county) {
@@ -395,7 +395,7 @@ specialEvents.push({
   },
 
   conditions: function(county) {
-    return county.bishop && county.church && Math.random() < baseChance && game.money <= 10000;
+    return county.bishop && county.church && Math.random() < baseChance && game.money >= 10000;
   },
 
   title: function(county) {
@@ -403,7 +403,7 @@ specialEvents.push({
   },
 
   text: function(county) {
-    return county.bishop.name + ' has been hitting the bottle again, and it’s affecting his sermons. Should we send him to rehab or just ignore it?';
+    return county.bishop.name + ' has been hitting the bottle again, and it\'s affecting his sermons. Should we send him to rehab or just ignore it?';
   },
 
   affirmButton: function(county) {

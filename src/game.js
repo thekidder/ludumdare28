@@ -282,6 +282,7 @@ function bishopDialogConfig(bishops) {
             var i = 0;
             while(Math.random() <= p && i < 4) {
               b[stats[i]] += randRange(1, 8);
+              b[stats[i]] = clamp(b[stats[i]]);
               p /= 3;
               ++i;
             }
@@ -530,7 +531,7 @@ function updateConverts(county) {
   var growth = county.growth;
   county.converts = clamp(Math.round(county.converts * (1 + growth)), min, Math.min(county.population, churchMax));
 
-  var amt = Math.min(Math.abs(county.growthShock), 0.5);
+  var amt = Math.min(Math.abs(county.growthShock), 2.0);
   county.growthShock -= sign(county.growthShock) * amt;
 }
 
@@ -598,7 +599,7 @@ function spreadPamphlets(county) {
     var amt = randRange(2, 8);
     game.money -= cost;
     county.hostility -= amt;
-    county.growthShock += randRangeFloat(1.0, 5.0);
+    county.growthShock += randRangeFloat(1.0, 4.0);
     county.spreadPamphlets = true;
 
     updateGlobalStateUI();
