@@ -73,7 +73,10 @@
               <span class="glyphicon glyphicon-book"></span><br/>
               Spread Pamphlets
             </button>
-            <button id="remove-bishop" type="button" class="btn btn-default btn-sm show-tooltip" title="Sometimes you just need a better bishop">
+            <button id="remove-bishop" type="button" class="btn btn-default btn-sm show-tooltip" title="Sometimes you just need a better bishop"
+              {{? !it.bishop }}
+                disabled="disabled"
+              {{?}}>
               <span class="glyphicon glyphicon-minus"></span><br/>
               Remove Bishop
             </button>
