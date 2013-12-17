@@ -277,8 +277,14 @@ function bishopDialogConfig(bishops) {
           }, 
           function() {
             var b = bishops.bishops[index];
-            var stat = ['fervor', 'loyalty', 'charisma', 'pennypinching'][randRange(0, 4)];
-            b[stat] += randRange(1, 8);
+            var stats = _.shuffle(['fervor', 'loyalty', 'charisma', 'pennypinching']);
+            var p = 1;
+            var i = 0;
+            while(Math.random() <= p && i < 4) {
+              b[stats[i]] += randRange(1, 8);
+              p /= 3;
+              ++i;
+            }
             bishops.bishops.splice(index, 1);
 
             var delay = 1;
