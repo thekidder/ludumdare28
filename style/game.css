@@ -99,6 +99,12 @@
   right: 4px;
 }
 
+.train-bishop {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}
+
 .visible {
   display: block !important;
 }

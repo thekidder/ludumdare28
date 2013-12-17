@@ -35,7 +35,8 @@ var game = {
   pamphletCost: 5000,
   buildChurchCost: 20000,
   recruitBishopCost: 5000,
-  recruitedBishop: false
+  recruitedBishop: false,
+  bishopTrainingCost: 2500
 };
 
 function openBishopDialog() {
@@ -258,7 +259,48 @@ function bishopDialogConfig(bishops) {
           openBishopDialog();
         });
       });
-    };
+
+      $('#train-bishop-' + bishops.bishops[index].index).on('click', function(e) {
+
+        bishopPopover.visible = false;
+        if(game.money < game.bishopTrainingCost) {
+          openDialog('info', {
+            title: 'Not enough money!',
+            text: 'You need ' + toMoneyFormat(game.bishopTrainingCost) + ' to train a bishop.'
+          });
+        } else {
+          showChoosableEvent({
+            title: 'Send ' + bishops.bishops[index].name + ' to training?', 
+            text: 'Pay ' + toMoneyFormat(game.bishopTrainingCost) + ' to train your bishop? This will take one month and (theoretically) make him better at things!', 
+            affirm: 'Train him!', 
+            deny: 'He knows too much already.'
+          }, 
+          function() {
+            var b = bishops.bishops[index];
+            var stat = ['fervor', 'loyalty', 'charisma', 'pennypinching'][randRange(0, 4)];
+            b[stat] += randRange(1, 8);
+            bishops.bishops.splice(index, 1);
+
+            var delay = 1;
+            if(!game.pendingBishops[game.month + delay]) {
+              game.pendingBishops[game.month + delay] = [];
+            }
+
+            game.pendingBishops[game.month + delay].push({
+              title: 'Back from training!',
+              msg: 'is back from his re-education and ready to serve you again!',
+              bishop: b
+            });
+            game.money -= game.bishopTrainingCost;
+
+            updateGlobalStateUI();
+            openBishopDialog();
+          },
+          function(){
+          });
+        }
+      });
+    }
     fn();
   }
 }
@@ -377,8 +419,8 @@ function endTurn() {
 
   if(game.pendingBishops[game.month]) {
     game.pendingBishops[game.month].forEach(function(b) {
-      game.bishops.push(b);
-      events.push(getEvent('new_bishop', {}, b.name));
+      game.bishops.push(b.bishop);
+      events.push(getEvent('new_bishop', b.title, {msg: b.msg, name: b.bishop.name}));
     });
 
     delete game.pendingBishops[game.month];
@@ -509,7 +551,11 @@ function recruitBishop(bishops) {
       game.pendingBishops[game.month + delay] = [];
     }
 
-    game.pendingBishops[game.month + delay].push(generateBishop());
+    game.pendingBishops[game.month + delay].push({
+      title: 'Your scouts have found a new bishop!',
+      msg: 'will be your loyal follower from now until his death.',
+      bishop: generateBishop()
+    });
     game.recruitedBishop = true;
 
     openBishopDialog();
