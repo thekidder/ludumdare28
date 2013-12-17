@@ -125,7 +125,7 @@ function County(name, population, converts, income, hostility, fervor) {
     get: function() {
       var g = this.growth;
 
-      console.log('g:' + g);
+      //console.log('g:' + g);
 
       if(!this.church || !this.bishop) {
         return '<span class="text-danger">None</span>';

@@ -32,13 +32,14 @@ var game = {
   money: 20000,
   pendingBishops: {},
   maxDebt: 10000,
-  pamphletCost: 2000,
+  pamphletCost: 5000,
   buildChurchCost: 20000,
-  recruitBishopCost: 5000
+  recruitBishopCost: 5000,
+  recruitedBishop: false
 };
 
 function openBishopDialog() {
-  openDialog('bishop', {bishops: game.bishops, recruitCost: toMoneyFormat(game.recruitBishopCost)});
+  openDialog('bishop', {bishops: game.bishops, recruitCost: toMoneyFormat(game.recruitBishopCost), recruitedBishop: game.recruitedBishop});
 }
 
 function followMouse(element, canvasX, canvasY, width, height) {
@@ -360,6 +361,7 @@ function endTurn() {
   }
 
   ++game.month;
+  game.recruitedBishop = false;
   updateGlobalStateUI();
 
   if(events.length == 0) {
@@ -436,7 +438,7 @@ function recruitBishop(bishops) {
   if(game.money < cost) {
     signalError('Not enough money! You need ' + toMoneyFormat(cost));
   } else {
-    $('#alerts').html(compileSnippet('info_alert', {text: 'Looking for a new bishop! Check back in a couple of months.'}));
+    //$('#alerts').html(compileSnippet('info_alert', {text: 'Looking for a new bishop! Check back in a couple of months.'}));
     game.money -= cost;
 
     var delay = 2;
@@ -445,7 +447,9 @@ function recruitBishop(bishops) {
     }
 
     game.pendingBishops[game.month + delay].push(generateBishop());
+    game.recruitedBishop = true;
 
+    openBishopDialog();
     updateGlobalStateUI();
   }
 }

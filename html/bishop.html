@@ -8,7 +8,14 @@
       <div class="modal-body clearfix">
         <div class="text-center">
           <div id="error"></div>
-          <div id="alerts"></div>
+          <div id="alerts">
+            {{? it.recruitedBishop }}
+            <div class="alert alert-info alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              Looking for a new bishop! Check back in a couple of months.
+            </div>
+            {{?}}
+          </div>
           {{~ it.bishops :v }}
           <div id="bishop-{{=v.index}}" class="bishop-container">
             <div class="text-center bishop-img">
@@ -19,7 +26,10 @@
           {{~}}
           {{? it.bishops.length < 3 }}
           <div class="bishop-container">
-            <button id="add-bishop" class="btn btn-default btn-add-bishop show-tooltip" title="Go forth into the unwashed masses and find a suitable soul to brainwash. It may take a couple of months. ({{=it.recruitCost}})">
+            <button id="add-bishop" class="btn btn-default btn-add-bishop show-tooltip" title="Go forth into the unwashed masses and find a suitable soul to brainwash. It may take a couple of months. ({{=it.recruitCost}})"
+              {{? it.recruitedBishop}}
+              disabled="disabled"
+              {{?}}>
               <span class="glyphicon glyphicon-plus"></span><br/>
               Recruit Bishop
             </button> 
