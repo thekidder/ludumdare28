@@ -22,7 +22,7 @@
               <img src="assets/bishops/{{=v.img}}" /><br/>
               <small>{{=v.name}}</small>
             </div>
-            <button class="btn btn-danger btm-xs dismiss-bishop" id="dismiss-bishop-{{=v.index}}">&times;</button>
+            <button class="btn btn-danger btm-xs dismiss-bishop show-tooltip" id="dismiss-bishop-{{=v.index}}" title="Remove him from my sight.">&times;</button>
           </div>
           {{~}}
           {{? it.bishops.length < 3 }}
