@@ -386,7 +386,156 @@ specialEvents.push({
   deny: function(county) {
     county.converts += randRange(75, 100);
     county.hostility *= randRangeFloat(0.75, 0.85);
-    openDialog('info', {title: 'Mixed Blessings', text: 'Hostility is down and followers are up!'});
+    openDialog('info', {title: 'Wooo!', text: 'Hostility is down and followers are up!'});
+  }
+});
+
+specialEvents.push({
+  setup: function(county) {
+  },
+
+  conditions: function(county) {
+    return county.bishop && county.church && Math.random() < baseChance && game.money <= 10000;
+  },
+
+  title: function(county) {
+    return 'Nobody Likes an Alcoholic Bishop';
+  },
+
+  text: function(county) {
+    return county.bishop.name + ' has been hitting the bottle again, and it’s affecting his sermons. Should we send him to rehab or just ignore it?';
+  },
+
+  affirmButton: function(county) {
+    return 'Send him to rehab ($10,000)';
+  },
+
+  denyButton: function(county) {
+    return 'Ignore it';
+  },
+
+  affirm: function(county) {
+    game.money -= 10000;
+  },
+
+  deny: function(county) {
+    county.bishop.charisma -= randRange(7, 16);
+    county.bishop.charisma = clamp(county.bishop.charisma);
+    openDialog('info', {title: 'That Could Have Gone Better', text: 'His Holiness\'s charisma has taken a dive!'});
+  }
+});
+
+specialEvents.push({
+  setup: function(county) {
+    this.celebrity = ['Kanye West', 'Charlie Sheen', 'Tom Hanks', 'Gary Busey', 'Justin Bieber', 'Miley Cyrus'][randRange(0, 6)];
+  },
+
+  conditions: function(county) {
+    return county.bishop && county.church && Math.random() < baseChance;
+  },
+
+  title: function(county) {
+    return 'Even Cults Like Famous People';
+  },
+
+  text: function(county) {
+    return 'Great news! ' + this.celebrity + ' wants to endorse ' + game.name + '! Would you like them to announce their endorsement on the Oprah Winfrey Show for the world to hear or at the ' + game.name + ' Annual Retreat to rile up the congregation?';
+  },
+
+  affirmButton: function(county) {
+    return 'Oprah Winfrey Show';
+  },
+
+  denyButton: function(county) {
+    return 'Annual Retreat';
+  },
+
+  affirm: function(county) {
+    county.converts += randRange(100, 201);
+    openDialog('info', {title: 'Membership is Up!', text: 'We have more followers in ' + county.name + '!'});
+  },
+
+  deny: function(county) {
+    county.internalFervorShock *= randRangeFloat(1.20, 1.35);
+    openDialog('info', {title: 'Fervor is Up!', text: 'Our members our more fervorous than ever!'});
+  }
+});
+
+specialEvents.push({
+  setup: function(county) {
+  },
+
+  conditions: function(county) {
+    return county.bishop && county.church && Math.random() < baseChance && game.money >= 15000;
+  },
+
+  title: function(county) {
+    return 'Your Authority is Questioned';
+  },
+
+  text: function(county) {
+    return county.bishop.name + ' suspects Our Great Leader pulled ' + game.name + ' out of his ass, and his loyalty is now wavering. Should we pay him off ($15,000.00) or just hope he sees the way?';
+  },
+
+  affirmButton: function(county) {
+    return 'Pay him off';
+  },
+
+  denyButton: function(county) {
+    return 'Do nothing';
+  },
+
+  affirm: function(county) {
+    game.money -= 15000;
+
+    if(Math.random() < 0.75) {
+      county.bishop.loyalty += randRange(7, 16);
+      county.bishop.loyalty = clamp(county.bishop.loyalty);
+      openDialog('info', {title: 'Money Breeds Loyalty', text: 'Our payment has made ' + county.bishop.name + ' substantially more loyal.'});
+    }
+  },
+
+  deny: function(county) {
+    county.bishop.loyalty -= randRange(7, 16);
+    county.bishop.loyalty = clamp(county.bishop.loyalty);
+    openDialog('info', {title: county.bishop.name + ' is Displeased', text: 'Our bishop\'s loyalty is at an all-time low.'});
+  }
+});
+
+specialEvents.push({
+  setup: function(county) {
+  },
+
+  conditions: function(county) {
+    return county.bishop && county.church && Math.random() < baseChance;
+  },
+
+  title: function(county) {
+    return 'Online Education';
+  },
+
+  text: function(county) {
+    return county.bishop.name + ' wants to continue his education with online courses from the University of ' + game.name + '. What should he take?';
+  },
+
+  affirmButton: function(county) {
+    return 'Finance 101';
+  },
+
+  denyButton: function(county) {
+    return 'God 401';
+  },
+
+  affirm: function(county) {
+    county.bishop.pennypinching += randRange(7, 11);
+    county.bishop.pennypinching = clamp(county.bishop.pennypinching);
+    openDialog('info', {title: 'Education Success!', text: county.bishop.name + ' has greatly improved his money-managing skills.'});
+  },
+
+  deny: function(county) {
+    county.bishop.fervor += randRange(7, 11);
+    county.bishop.fervor = clamp(county.bishop.fervor);
+    openDialog('info', {title: 'Education Success!', text: 'Our bishop\'s fervor is at an all-time high!'});
   }
 });
 
