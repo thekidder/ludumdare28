@@ -239,6 +239,28 @@ function bishopDialogConfig(bishops) {
   $('#add-bishop').on('click', function() {
     recruitBishop(bishops);
   });
+
+  for(var i = 0; i < bishops.bishops.length; ++i) {
+    var fn = function() {
+      var index = i;
+      $('#dismiss-bishop-' + bishops.bishops[index].index).on('click', function(e) {
+        bishopPopover.visible = false;
+        showChoosableEvent({
+          title: 'Dismiss ' + bishops.bishops[index].name + '?', 
+          text: 'Dismiss your loyal servant? This cannot be undone!', 
+          affirm: 'No, keep him!', 
+          deny: 'Send him away!'
+        }, 
+        function() {
+        }, 
+        function(){
+          bishops.bishops.splice(index, 1);
+          openBishopDialog();
+        });
+      });
+    };
+    fn();
+  }
 }
 
 function bishopAddDialogConfig(bishops, dialog) {
@@ -364,10 +386,19 @@ function endTurn() {
 
   ++game.month;
   game.recruitedBishop = false;
-  updateGlobalStateUI();
 
-  var specialEvent = false;
+  var specialEvent = undefined;
   var specialEventCounty = undefined;
+  
+  for(var i = 0; i < game.counties.length; ++i) {
+    for(var j = 0; j < specialEvents.length; ++j) {
+      if(specialEvents[j].conditions(game.counties[i])) {
+        specialEvent = specialEvents[j];
+        specialEventCounty = game.counties[i];
+        break;
+      }
+    }
+  }
 
   if(events.length == 0 && !specialEvent) {
     events = getDefaultEvents(game.money, lastMoney)
@@ -389,11 +420,20 @@ function endTurn() {
       showChoosableEvent({
         title: specialEvent.title(specialEventCounty), 
         text: specialEvent.text(specialEventCounty), 
-        affirm: specialEvent.affirm(specialEventCounty), 
-        deny: specialEvent.deny(specialEventCounty)
+        affirm: specialEvent.affirmButton(specialEventCounty), 
+        deny: specialEvent.denyButton(specialEventCounty)
+      }, 
+      function() {
+        specialEvent.affirm(specialEventCounty);
+        updateGlobalStateUI();
+      }, 
+      function(){
+        specialEvent.deny(specialEventCounty);
+        updateGlobalStateUI();
       });
     }
   }
+  updateGlobalStateUI();
 }
 
 function updateFervor(county) {
