@@ -215,9 +215,9 @@ function getBishopName() {
 }
 
 function Bishop(name, img, charisma, fervor, loyalty, pennypinching) {
-  if(Math.random() < 0.4) {
-    name = bishopTitles[randRange(0, bishopTitles.length)] + ' ' + name;
-  }
+  //if(Math.random() < 0.4) {
+  name = bishopTitles[randRange(0, bishopTitles.length)] + ' ' + name;
+  //}
   this.index = bishopCurrentName;
   this.name = name;
   this.img = img;
