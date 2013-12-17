@@ -389,12 +389,16 @@ function endTurn() {
 
   var specialEvent = undefined;
   var specialEventCounty = undefined;
+
+  specialEvents = _.shuffle(specialEvents);
   
   for(var i = 0; i < game.counties.length; ++i) {
     for(var j = 0; j < specialEvents.length; ++j) {
       if(specialEvents[j].conditions(game.counties[i])) {
         specialEvent = specialEvents[j];
         specialEventCounty = game.counties[i];
+
+        specialEvent.setup(specialEventCounty);
         break;
       }
     }
