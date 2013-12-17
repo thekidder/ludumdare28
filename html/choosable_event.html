@@ -1,0 +1,19 @@
+<div class="modal fade in visible" id="info-dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{=it.title}}</h4>
+      </div>
+      <div class="modal-body clearfix">
+        <div class="text-center">
+          <div id="alerts"></div>
+        </div>
+        {{=it.text}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="deny" class="btn btn-danger">{{=it.deny}}</button>
+        <button type="button" id="affirm" class="btn btn-success">{{=it.affirm}}</button>
+      </div>
+    </div>
+  </div>
+</div>

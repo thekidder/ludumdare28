@@ -141,6 +141,8 @@ $(document).ready(function() {
   loadDialog('end_turn', function() {})
   loadDialog('end_game', function() {});
 
+  initChoosable();
+
   game.bishops.push(generateBishop());
 
   var countiesByLucrativeness = _.sortBy(game.counties, function(c) { return c.lucrativeness();});
@@ -364,7 +366,10 @@ function endTurn() {
   game.recruitedBishop = false;
   updateGlobalStateUI();
 
-  if(events.length == 0) {
+  var specialEvent = false;
+  var specialEventCounty = undefined;
+
+  if(events.length == 0 && !specialEvent) {
     events = getDefaultEvents(game.money, lastMoney)
   }
 
@@ -372,8 +377,22 @@ function endTurn() {
     openDialog('end_game', {class: 'text-danger', title: 'Backrupt', text: 'You\'ve gone bankrupt. This is the end of the line for ' + game.name + '!'});
   } else if(game.money > 2000000 && game.totalFollowers() > 1000000) {
     openDialog('end_game', {class: 'text-success', title: 'You Win!', text: 'Well. A multi-millionaire and hundreds of thousands of people praising your name. Must feel pretty good, huh?'});
-  } else {
+  } else if(events.length) {
     openDialog('end_turn', {title: 'Month ' + game.month, events: events});
+  }
+
+  if(specialEvent) {
+    if(specialEvent.hasOwnProperty('effects')) {
+      openDialog('info', {title: specialEvent.title(specialEventCounty), text: specialEvent.text(specialEventCounty)});
+      specialEvent.effects(specialEventCounty);
+    } else {
+      showChoosableEvent({
+        title: specialEvent.title(specialEventCounty), 
+        text: specialEvent.text(specialEventCounty), 
+        affirm: specialEvent.affirm(specialEventCounty), 
+        deny: specialEvent.deny(specialEventCounty)
+      });
+    }
   }
 }
 

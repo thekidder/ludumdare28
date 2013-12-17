@@ -24,7 +24,7 @@ function closeDialog(e, d) {
   dialogNumOpen--;
 }
 
-function openDialog(name, templateData) {
+function openDialog(name, templateData, args) {
   var cur = isDialogOpen();
   if(cur && cur.name != name) {
     console.log('in dialog');
@@ -41,7 +41,7 @@ function openDialog(name, templateData) {
       $('.close-button').on('click', function(e) { closeDialog(e, dialogs[i]);});
       dialogs[i].close = function(e) { var ind = i; closeDialog(e, dialogs[ind]);};
 
-      dialogs[i].configFn(templateData, dialogs[i]);
+      dialogs[i].configFn(templateData, dialogs[i], args);
 
       dialogNumOpen++;
 
@@ -61,7 +61,7 @@ function loadDialog(name, configFn, openFn, closeFn) {
       entity: entity,
       template: template,
       configFn: configFn,
-      closeFn: closeFn
+      closeFn: closeFn,
     };
     dialogs.push(obj);
 
@@ -69,4 +69,24 @@ function loadDialog(name, configFn, openFn, closeFn) {
       openFn();
     }
   });
+}
+
+function initChoosable() {
+  loadDialog('choosable_event', dialogChoosableConfig);
+}
+
+function dialogChoosableConfig(t, d, a) {
+  $('#affirm').on('click', function(e) {
+    a.success();
+    closeDialog(e, d);
+  });
+
+  $('#deny').on('click', function(e) {
+    a.failure();
+    closeDialog(e, d);
+  });
+}
+
+function showChoosableEvent(template, success, failure) {
+  openDialog('choosable_event', template, {success: success, failure: failure});
 }
