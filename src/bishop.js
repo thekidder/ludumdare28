@@ -180,7 +180,7 @@ var bishopNames = [
   'Francisco Diego y Moreno',
   'Francisco Mora y Borrell',
   'Francisco Porro y Reinado',
-  'François Norbert Blanchet',
+  'Francois Norbert Blanchet',
   'Frank Henry Greteman',
   'Frederic Baraga',
   'Frederick Eis',
