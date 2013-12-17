@@ -220,13 +220,13 @@ function County(name, population, converts, income, hostility, fervor) {
 
   Object.defineProperty(this, "hostilityStr", {
     get: function() {
-      return toFuzzyFormat(this.hostility);
+      return toFuzzyFormat(this.hostility, true);
     }
   });
 
   Object.defineProperty(this, "fervorStr", {
     get: function() {
-      return toFuzzyFormat(this.fervor.toPrecision(4));
+      return toFuzzyFormat(this.fervor, false);
     }
   });
 

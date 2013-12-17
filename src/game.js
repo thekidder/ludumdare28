@@ -388,20 +388,41 @@ function toPopulationFormat(amount) {
   return amount.toLocaleString();
 }
 
-function toFuzzyFormat(amount) {
+function toFuzzyFormat(amount, reverse) {
+  if(arguments.length == 1) {
+    var reverse = false;
+  }
+
+  if(amount < 40) {
+    if(reverse) {
+      var span = '<span class="text-success">';
+    } else {
+      var span = '<span class="text-danger">';
+    }
+  } else if(amount < 60) {
+    var span = '<span class="text-warning">';
+  } else {
+    if(reverse) {
+      var span = '<span class="text-danger">';
+    } else {
+      var span = '<span class="text-success">';
+      
+    }
+  }
+
   if(amount <= 0) {
-    return 'None';
+    return span + 'None' + '</span>';
   }
   if(amount < 20) {
-    return 'Very Low';
+    return span + 'Very Low' + '</span>';
   } else if(amount < 40) {
-    return 'Low';
+    return span + 'Low' + '</span>';
   } else if(amount < 60) {
-    return 'Moderate';
+    return span + 'Moderate' + '</span>';
   } else if(amount < 80) {
-    return 'High';
+    return span + 'High' + '</span>';
   } else {
-    return 'Very High';
+    return span + 'Very High' + '</span>';
   }
 }
 
