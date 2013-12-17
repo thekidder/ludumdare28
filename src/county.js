@@ -202,7 +202,11 @@ function County(name, population, converts, income, hostility, fervor) {
 
   Object.defineProperty(this, 'profitStr', {
     get: function() {
-      return toMoneyFormat(this.profit);
+      var c = this.converts;
+      this.converts = clamp(this.converts * (1 + this.growth), 0, this.population);
+      var r = toMoneyFormat(this.profit);
+      this.converts = c;
+      return r;
     }
   });
 
